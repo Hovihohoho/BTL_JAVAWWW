@@ -1,21 +1,31 @@
 package iuh.btl_n7_iuh.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "Categories")
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
+
+    @Column(unique = true, length = 100)
+    private String slug;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    // TODO: Bổ sung Constructor, Getters và Setters
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 }

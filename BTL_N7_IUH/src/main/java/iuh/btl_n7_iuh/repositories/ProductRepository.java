@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    // Phương thức tự động: Lấy các sản phẩm có giá khuyến mãi
-    List<Product> findBySalePriceIsNotNull();
+    List<Product> findTop6ByOrderByPriceDesc(); // lấy 6 sản phẩm mới nhất
 }
