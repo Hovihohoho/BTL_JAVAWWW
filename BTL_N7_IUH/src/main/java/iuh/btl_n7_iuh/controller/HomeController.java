@@ -42,4 +42,9 @@ public class HomeController {
         // Trả về tên view: "login" -> /WEB-INF/jsp/login.jsp
         return "login";
     }
+
+    @GetMapping("/contact")
+    public String contactPage(){
+        return "contact";
+    }
 }
