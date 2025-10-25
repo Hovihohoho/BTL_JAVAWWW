@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${product.name}">Thông tin sản phẩm</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root { --frubana-green:#6d9c3a; }
+        .text-frubana { color:var(--frubana-green); }
+        .btn-frubana { background:var(--frubana-green);color:#fff;border:none; }
+        .btn-frubana:hover { background:#5b8731;color:#fff; }
+        .product-img { border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.08); }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar tái sử dụng -->
+<div th:replace="index :: navbar"></div>
+
+<div class="container py-5">
+    <div class="row g-5">
+
+        <!-- Ảnh -->
+        <div class="col-md-6 text-center">
+            <img th:src="@{'/images/' + ${product.imageUrl}}"
+                 class="product-img img-fluid" style="max-height:400px; object-fit:cover;">
+        </div>
+
+        <!-- Thông tin sản phẩm -->
+        <div class="col-md-6">
+            <h2 class="fw-bold text-frubana" th:text="${product.name}"></h2>
+
+            <h4 class="text-danger fw-bold my-3">
+                <span th:text="${#numbers.formatDecimal(product.price,0,'POINT',3,'COMMA')}"></span> VNĐ
+            </h4>
+
+            <p th:text="${product.description}" style="line-height:1.7;"></p>
+
+            <!-- ✅ FORM THÊM VÀO GIỎ -->
+            <form th:action="@{/cart/add}" method="post" class="d-flex gap-3 mt-4">
+                <input type="hidden" name="productId" th:value="${product.id}">
+                <input type="number" name="quantity" value="1" min="1" class="form-control" style="width:100px;">
+                <button type="submit" class="btn btn-frubana px-4">Thêm vào giỏ</button>
+            </form>
+
+            <a th:href="@{/products/all}" class="btn btn-outline-secondary mt-4">← Quay lại danh sách</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
