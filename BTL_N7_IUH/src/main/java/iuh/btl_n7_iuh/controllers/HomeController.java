@@ -6,13 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import iuh.btl_n7_iuh.models.CustomUserDetails;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class HomeController {
@@ -51,10 +46,5 @@ public class HomeController {
     @GetMapping("/contact")
     public String contactPage(){
         return "contact";
-    }
-
-    @GetMapping("/cart")
-    public String cartPage() {
-        return "cart";
     }
 }

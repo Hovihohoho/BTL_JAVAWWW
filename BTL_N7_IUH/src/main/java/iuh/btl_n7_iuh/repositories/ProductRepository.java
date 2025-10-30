@@ -9,4 +9,9 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findTop6ByOrderByPriceDesc(); // lấy 6 sản phẩm mới nhất
+
+    List<Product> findByNameContainingIgnoreCase(String keyword);
+
+    // Lọc theo slug của Category
+    List<Product> findByCategory_Slug(String slug);
 }
