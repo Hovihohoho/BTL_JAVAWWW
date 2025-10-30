@@ -1,0 +1,81 @@
+/* Tổng thể layout */
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #6ab04c;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.sidebar-header {
+    padding: 20px;
+    background: #58b548;
+}
+
+.sidebar .avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.sidebar .nav-link {
+    color: #eaf0e6;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background-color: #7bed9f;
+    color: #000;
+    font-weight: 600;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 15px;
+    font-size: 13px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Main content */
+.main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    background-color: #fff;
+    min-height: 100vh;
+}
+
+.navbar {
+    height: 60px;
+}
+
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .sidebar {
+        width: 200px;
+    }
+    .main-content {
+        margin-left: 200px;
+    }
+}

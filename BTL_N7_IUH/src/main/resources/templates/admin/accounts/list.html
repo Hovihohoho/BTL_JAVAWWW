@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, 'Quản lý Tài khoản')}">
+
+    <div th:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-users me-2"></i>DANH SÁCH TÀI KHOẢN</h2>
+            <a th:href="@{/admin/accounts/new}" class="btn btn-success">
+                <i class="fas fa-plus-circle"></i> + Thêm mới
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Tên đăng nhập</th>
+                        <th>Họ và tên</th>
+                        <th>Email</th>
+                        <th>Trạng thái</th>
+                        <th>Vai trò</th>
+                        <th>Chức năng</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="account, i : ${accounts}">
+                        <td th:text="${account.id}">1</td>
+                        <td th:text="${account.username}">canhdz</td>
+                        <td th:text="${account.accountDetail != null ? account.accountDetail.fullName : 'Chưa cập nhật'}">Nguyễn Văn A</td>
+                        <td th:text="${account.email}">user@gmail.com</td>
+                        <td>
+                            <span th:classappend="${account.isEnabled ? 'bg-success' : 'bg-danger'}" class="badge text-white" th:text="${account.isEnabled ? 'Hoạt động' : 'Khóa'}">Hoạt động</span>
+                        </td>
+                        <td>
+                            <span th:classappend="${account.role.name == 'ROLE_ADMIN' ? 'bg-primary' : 'bg-secondary'}" class="badge text-white" th:text="${account.role != null ? account.role.name : 'N/A'}">ROLE_USER</span>
+                        </td>
+                        <td>
+                            <a th:href="@{'/admin/accounts/edit/' + ${account.id}}" class="btn btn-sm btn-info me-1"><i class="fas fa-edit"></i> Sửa</a>
+                            <form th:action="@{'/admin/accounts/delete/' + ${account.id}}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?');"><i class="fas fa-trash"></i> Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

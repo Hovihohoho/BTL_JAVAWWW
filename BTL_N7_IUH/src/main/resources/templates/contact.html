@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Liên hệ | Frubana</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --frubana-green: #6d9c3a;
+            --frubana-dark-green: #5cb85c;
+            --frubana-yellow: #f8c057;
+        }
+        .text-frubana { color: var(--frubana-green); }
+        .bg-frubana { background-color: var(--frubana-dark-green) !important; }
+        .btn-frubana {
+            background-color: var(--frubana-green);
+            color: white;
+            border: none;
+        }
+        .btn-frubana:hover {
+            background-color: #5b8731;
+            color: white;
+        }
+        .product-card {
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .product-card img {
+            height: 200px;
+            object-fit: cover;
+        }
+        .service-item {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 1.5rem 1rem;
+        }
+        .service-item .icon-box {
+            font-size: 2.5rem;
+            color: var(--frubana-green);
+            margin-bottom: 0.5rem;
+        }
+        /* Custom container only for main content, not header */
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .contact-map {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .contact-main {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .contact-form {
+            flex: 2;
+            background: #fafbfc;
+            border-radius: 12px;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            min-width: 320px;
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: #fff;
+            box-sizing: border-box;
+        }
+        .contact-form textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+        .contact-form .error {
+            color: #d32f2f;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+        .contact-form button {
+            width: 100%;
+            background: #fff;
+            color: #8bc34a;
+            border: 2px solid #8bc34a;
+            border-radius: 6px;
+            padding: 10px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .contact-form button:hover {
+            background: #8bc34a;
+            color: #fff;
+        }
+        .contact-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 260px;
+        }
+        .info-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .info-box .icon {
+            font-size: 1.7rem;
+            color: #8bc34a;
+            margin-top: 2px;
+        }
+        .info-box .info {
+            display: flex;
+            flex-direction: column;
+        }
+        .info-box .info-title {
+            font-weight: 600;
+            color: #4caf50;
+            margin-bottom: 2px;
+        }
+        .info-box .info-detail {
+            color: #444;
+            font-size: 1rem;
+        }
+        @media (max-width: 900px) {
+            .contact-main {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top bar and navbar use Bootstrap's .container, do not override -->
+<div class="top-bar py-2 bg-frubana text-white" style="font-size: 0.8rem;">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="contact-info d-none d-md-block">
+            <span class="me-3"><i class="fas fa-map-marker-alt"></i> Địa Chỉ: 14 Nguyễn Văn Bảo, phường Hanh Thông, TP.HCM</span>
+            <span><i class="fas fa-envelope"></i> Email: fruitngon@gmail.com</span>
+        </div>
+        <div class="policy-links">
+            <a href="#" class="text-white text-decoration-none me-3">Chính sách bảo mật</a>
+            <span class="mx-1 d-none d-sm-inline">/</span>
+            <a href="#" class="text-white text-decoration-none d-none d-sm-inline">Điều khoản sử dụng</a>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fs-2 fw-bold text-frubana" th:href="@{/}">
+            Frubana
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold">
+                <li class="nav-item">
+                    <a class="nav-link text-frubana active" aria-current="page" th:href="@{/}">Trang chủ</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sản phẩm
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-sm" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" th:href="@{/products/vegetable}">Rau củ quả</a></li>
+                        <li><a class="dropdown-item" th:href="@{/products/fruit}">Trái cây</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/products/all}">Xem tất cả</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/testimonials}">Lời chứng thực</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" th:href="@{/contact}">Liên hệ</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <button class="btn p-2" type="button" title="Tìm kiếm">
+                    <i class="fas fa-search text-dark"></i>
+                </button>
+                <a th:href="@{/cart}" class="btn p-2 position-relative" title="Giỏ hàng">
+                    <i class="fas fa-shopping-bag text-frubana fs-5"></i>
+                    <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle"
+                          th:text="${totalQuantity != null ? totalQuantity : 0}"></span>
+                    0</span>
+                </a>
+
+                <!-- Hiển thị khi ĐÃ ĐĂNG NHẬP -->
+                <div class="dropdown ms-2" sec:authorize="isAuthenticated()">
+                    <button class="btn dropdown-toggle text-dark fw-semibold" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-1"></i>
+                        <span sec:authentication="name">Tên người dùng</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item" th:href="@{/profile}">Thông tin cá nhân</a></li>
+                        <li><a class="dropdown-item" th:href="@{/orders}">Lịch sử đơn hàng</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                                <button type="submit" class="dropdown-item text-danger" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Hiển thị khi CHƯA ĐĂNG NHẬP -->
+                <div class="d-flex ms-2" sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}" class="btn btn-outline-success me-2">Đăng nhập</a>
+                    <a th:href="@{/register}" class="btn btn-success">Đăng ký</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <!-- Main content uses custom .main-container -->
+    <div class="main-container">
+        <div class="contact-map">
+            <iframe src="https://www.google.com/maps?q=235+Hoàng+Quốc+Việt,+Bắc+Từ+Liêm,+Hà+Nội&output=embed" width="100%" height="100%" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+        </div>
+        <div class="contact-main">
+            <form class="contact-form" method="post" action="/contact">
+                <input type="text" name="name" placeholder="Tên Của bạn" required>
+                <div class="error">Tên không được để trống</div>
+                <input type="email" name="email" placeholder="Email Của bạn" required>
+                <div class="error">Email không được để trống</div>
+                <textarea name="message" placeholder="Nội dung" required></textarea>
+                <div class="error">Nội dung không được để trống</div>
+                <button type="submit">Gửi liên hệ</button>
+            </form>
+            <div class="contact-info">
+                <div class="info-box">
+                    <span class="icon"><i class="fa fa-map-marker-alt"></i></span>
+                    <div class="info">
+                        <span class="info-title">Địa chỉ</span>
+                        <span class="info-detail">235 Hoàng Quốc Việt, Bắc Từ liêm, Hà Nội!</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <span class="icon"><i class="fa fa-envelope"></i></span>
+                    <div class="info">
+                        <span class="info-title">Email</span>
+                        <span class="info-detail">apteach@gmail.com</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <span class="icon"><i class="fa fa-phone"></i></span>
+                    <div class="info">
+                        <span class="info-title">Số điện thoại</span>
+                        <span class="info-detail">037 9255 680</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
