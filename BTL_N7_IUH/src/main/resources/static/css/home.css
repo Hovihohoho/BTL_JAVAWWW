@@ -1,0 +1,69 @@
+:root {
+    --frubana-green: #6d9c3a;
+    --frubana-dark: #5b8731;
+    --frubana-light: #e9f6df;
+}
+
+/* Button & theme */
+.btn-frubana {
+    background-color: var(--frubana-green);
+    color: #fff;
+    border: none;
+    transition: 0.3s;
+}
+.btn-frubana:hover {
+    background-color: var(--frubana-dark);
+}
+
+/* Navbar hover effect */
+.navbar-nav .nav-link {
+    transition: color 0.3s;
+}
+.navbar-nav .nav-link:hover {
+    color: var(--frubana-green);
+}
+
+/* Service cards */
+.service-item {
+    transition: all 0.3s ease;
+}
+.hover-rise:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Product cards */
+.product-card img {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+.product-card {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Carousel */
+.carousel-caption {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+}
+
+/* Footer */
+footer {
+    background-color: var(--frubana-green);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .carousel-caption {
+        font-size: 0.9rem;
+        bottom: 10%;
+    }
+}
