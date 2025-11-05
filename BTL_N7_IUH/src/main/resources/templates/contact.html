@@ -200,11 +200,10 @@
                 <button class="btn p-2" type="button" title="Tìm kiếm">
                     <i class="fas fa-search text-dark"></i>
                 </button>
-                <a th:href="@{/cart}" class="btn p-2 position-relative" title="Giỏ hàng">
-                    <i class="fas fa-shopping-bag text-frubana fs-5"></i>
-                    <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle"
-                          th:text="${totalQuantity != null ? totalQuantity : 0}"></span>
-                    0</span>
+                <a th:href="@{/cart}" class="btn position-relative me-3" title="Giỏ hàng">
+                    <i class="fa fa-shopping-bag text-frubana fs-5"></i>
+                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
+                          th:text="${totalQuantity != null ? totalQuantity : 0}">0</span>
                 </a>
 
                 <!-- Hiển thị khi ĐÃ ĐĂNG NHẬP -->
@@ -275,5 +274,6 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/script/cart_badge.js"></script>
 </body>
 </html>
