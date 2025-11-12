@@ -86,7 +86,7 @@
         </div>
     </div>
 </div>
-<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3">
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3" th:fragment="navbar">
     <div class="container">
         <a class="navbar-brand fs-3 fw-bold text-frubana" th:href="@{/}">Frubana</a>
         <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -99,7 +99,9 @@
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
                     <ul class="dropdown-menu shadow-sm border-0">
                         <li><a class="dropdown-item" th:href="@{/products/vegetable}">Rau củ quả</a></li>
+                        <li><a class="dropdown-item" th:href="@{/products/meat}">Thịt tươi</a></li>
                         <li><a class="dropdown-item" th:href="@{/products/fruit}">Trái cây</a></li>
+                        <li><a class="dropdown-item" th:href="@{/products/bread}">Bánh mì</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" th:href="@{/products/all}">Xem tất cả</a></li>
                     </ul>
@@ -147,14 +149,17 @@
 </nav>
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
-        <div class="carousel-item active" th:style="'background: url(' + @{/images/banner1.jpg} + ') center/cover; height:480px;'">
+        <div class="carousel-item active"
+             th:style="|background: url(@{/images/banner1.jpg}) center/cover; height:480px;|">
             <div class="carousel-caption">
                 <h1 class="fw-bold">100% Thực phẩm hữu cơ</h1>
                 <p>Rau củ quả tươi - sạch - an toàn.</p>
                 <a th:href="@{/products/all}" class="btn btn-frubana mt-2">Xem sản phẩm</a>
             </div>
         </div>
-        <div class="carousel-item" th:style="'background: url(' + @{/images/banner2.jpg} + ') center/cover; height:480px;'">
+
+        <div class="carousel-item"
+             th:style="|background: url(@{/images/banner2.jpg}) center/cover; height:480px;|">
             <div class="carousel-caption">
                 <h1 class="fw-bold">Trái cây nhập khẩu</h1>
                 <p>Hương vị tự nhiên, tươi ngon mỗi ngày.</p>
@@ -163,6 +168,7 @@
         </div>
     </div>
 </div>
+
 <section class="container my-5">
     <div class="row text-center g-4">
         <div class="col-md-3">
@@ -204,12 +210,18 @@
                 <div class="card-body">
                     <h6 class="fw-bold text-dark" th:text="${product.name}">Tên sản phẩm</h6>
                     <p class="mb-1">
+                        <!-- Hiển thị giá gốc (gạch ngang) nếu có sale -->
                         <span class="text-muted text-decoration-line-through me-1"
                               th:if="${product.salePrice != null}"
-                              th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')} + ' VND'"></span>
+                              th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">
+    </span>
+
+                        <!-- Hiển thị giá thực tế (ưu tiên sale nếu có) -->
                         <span class="fw-bold text-success"
-                              th:text="${#numbers.formatDecimal(product.salePrice != null ? product.salePrice : product.price,0,'COMMA',0,'POINT')} + ' VND'"></span>
+                              th:text="${#numbers.formatDecimal((product.salePrice != null ? product.salePrice : product.price), 0, 'COMMA', 0, 'POINT')} + ' VND'">
+    </span>
                     </p>
+
                     <button type="button" class="btn btn-frubana btn-sm w-100 add-to-cart-btn"
                        th:attr="data-id=${product.id},data-name=${product.name},data-price=${product.salePrice != null ? product.salePrice : product.price},data-image=${product.imageUrl}">
                        Thêm vào giỏ
