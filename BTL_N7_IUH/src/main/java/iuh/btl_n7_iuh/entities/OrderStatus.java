@@ -15,6 +15,11 @@ public class OrderStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "status_name", nullable = false, unique = true, length = 50)
-    private String statusName;
+    // ✅ Sửa tên thành "name" cho khớp với OrderService
+    @Column(nullable = false, unique = true, length = 50)
+    private String name;
+
+    // ✅ Thêm cột mô tả để tránh lỗi setDescription()
+    @Column(length = 255)
+    private String description;
 }

@@ -125,15 +125,6 @@
             </div>
         </div>
     </nav>
-    <!-- DEBUG info (nếu cần) -->
-    <div class="container mt-3">
-        <div class="alert alert-secondary small">
-            <b>DEBUG:</b>
-            Username = <span sec:authentication="principal.username"></span> |
-            Fullname = <span sec:authentication="principal.fullName"></span> |
-            Role = <span sec:authentication="principal.authorities"></span>
-        </div>
-    </div>
     <!-- Banner Giỏ Hàng -->
     <div class="cart-banner mb-4">
         <div class="container">
@@ -335,6 +326,29 @@
             }
         });
     });
+    // ✅ Hàm cập nhật tổng số sản phẩm hiển thị trên biểu tượng giỏ hàng
+    function updateCartBadge() {
+        const badge = document.querySelector(".badge.bg-danger");
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // Cộng dồn số lượng từng sản phẩm
+        const totalQuantity = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+
+        badge.textContent = totalQuantity;
+
+        // Ẩn badge nếu giỏ trống
+        if (totalQuantity === 0) {
+            badge.style.display = "none";
+        } else {
+            badge.style.display = "inline-block";
+        }
+    }
+
+    // ✅ Gọi ngay khi trang vừa tải
+    document.addEventListener("DOMContentLoaded", function () {
+        updateCartBadge();
+    });
+
 </script>
 
 

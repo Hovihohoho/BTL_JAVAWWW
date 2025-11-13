@@ -1,12 +1,17 @@
 package iuh.btl_n7_iuh.controllers;
 
+import iuh.btl_n7_iuh.dto.CartItem;
+import iuh.btl_n7_iuh.services.CartService;
+import iuh.btl_n7_iuh.services.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.HmacUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -27,6 +32,15 @@ public class VnpayController {
     @Value("${vnpay.returnUrl}")
     private String vnp_ReturnUrl;
 
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private CartService cartService;
+
+    // ==========================
+    // 1️⃣ Tạo link thanh toán VNPay
+    // ==========================
     @GetMapping("/payment/vnpay")
     public String payment(@RequestParam("amount") long amount, HttpServletRequest req) {
 
@@ -48,10 +62,9 @@ public class VnpayController {
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        String createDate = formatter.format(cld.getTime());
-        vnp_Params.put("vnp_CreateDate", createDate);
+        vnp_Params.put("vnp_CreateDate", formatter.format(cld.getTime()));
 
-        // ✅ Build hash & query
+        // Build hash & query
         List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
@@ -84,4 +97,41 @@ public class VnpayController {
         return "redirect:" + paymentUrl;
     }
 
+    // ==========================
+    // 2️⃣ Xử lý sau khi thanh toán
+    // ==========================
+    @GetMapping("/payment/vnpay_return")
+    public String vnpayReturn(@RequestParam Map<String, String> allParams,
+                              HttpServletRequest request) {
+        System.out.println("VNPay return params: " + allParams);
+
+        String vnp_ResponseCode = allParams.get("vnp_ResponseCode");
+
+        if ("00".equals(vnp_ResponseCode)) {
+            try {
+                String username = request.getUserPrincipal().getName(); // người dùng hiện tại
+                long amount = Long.parseLong(allParams.get("vnp_Amount")) / 100; // chia lại 100
+                String address = "Địa chỉ mặc định";
+
+                List<CartItem> cartItems = cartService.getCartItemsFromSession(request);
+
+                orderService.createOrder(
+                        username,
+                        BigDecimal.valueOf(amount),
+                        "VNPay",
+                        address,
+                        cartItems
+                );
+
+                cartService.clearCartSession(request); // xóa giỏ sau khi lưu đơn
+
+                return "redirect:/orders";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "redirect:/checkout-fail";
+            }
+        } else {
+            return "redirect:/checkout-fail";
+        }
+    }
 }
