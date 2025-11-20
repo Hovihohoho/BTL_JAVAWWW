@@ -20,7 +20,7 @@
 <!-- Navbar tái sử dụng -->
 <div th:replace="index :: navbar"></div>
 
-<div class="container py-5">
+<div class="container py-5" style="margin-top:120px;">
     <div class="row g-5">
 
         <!-- Ảnh -->
@@ -34,17 +34,26 @@
             <h2 class="fw-bold text-frubana" th:text="${product.name}"></h2>
 
             <h4 class="text-danger fw-bold my-3">
-                <span th:text="${#numbers.formatDecimal(product.price,0,'POINT',3,'COMMA')}"></span> VNĐ
+                <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></span>
+                VNĐ
             </h4>
 
             <p th:text="${product.description}" style="line-height:1.7;"></p>
 
             <!-- ✅ FORM THÊM VÀO GIỎ -->
-            <form th:action="@{/cart/add}" method="post" class="d-flex gap-3 mt-4">
-                <input type="hidden" name="productId" th:value="${product.id}">
-                <input type="number" name="quantity" value="1" min="1" class="form-control" style="width:100px;">
-                <button type="submit" class="btn btn-frubana px-4">Thêm vào giỏ</button>
-            </form>
+            <div class="d-flex gap-3 mt-4">
+                <input id="qtyInput" type="number" value="1" min="1" class="form-control" style="width:100px;">
+
+                <button type="button"
+                        class="btn btn-frubana px-4 add-to-cart-btn"
+                        th:attr="data-id=${product.id},
+                     data-name=${product.name},
+                     data-price=${product.salePrice != null ? product.salePrice : product.price},
+                     data-image=${product.imageUrl}">
+                    Thêm vào giỏ
+                </button>
+            </div>
+
 
             <a th:href="@{/products/all}" class="btn btn-outline-secondary mt-4">← Quay lại danh sách</a>
         </div>

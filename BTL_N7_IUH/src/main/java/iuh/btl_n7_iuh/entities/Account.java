@@ -30,6 +30,9 @@ public class Account {
     @Column(name = "is_enabled")
     private Boolean isEnabled ;
 
+    @Column(name = "reset_token")
+    private String resetToken;
+
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     private AccountDetail accountDetail;
 }

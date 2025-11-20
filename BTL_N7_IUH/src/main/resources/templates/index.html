@@ -124,11 +124,16 @@
             transform: translateY(0);
             opacity: 1;
         }
+        .navbar {
+            margin-top: 40px !important; /* đủ để không đè lên topbar */
+        }
+
 
     </style>
 </head>
 <body>
-<div class="py-2 bg-frubana text-white small">
+<!-- Topbar -->
+<div class="topbar py-2 bg-frubana text-white small fixed-top">
     <div class="container d-flex justify-content-between flex-wrap align-items-center">
         <div>
             <i class="fa fa-map-marker-alt me-1"></i> 14 Nguyễn Văn Bảo, Gò Vấp
@@ -141,8 +146,9 @@
         </div>
     </div>
 </div>
+
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-navbar">
+<nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-navbar" th:fragment="navbar">
     <div class="container py-2">
         <a class="navbar-brand fs-3 fw-bold text-frubana" th:href="@{/}">
             <i class="fa-solid fa-leaf me-1"></i> Frubana
@@ -263,26 +269,38 @@
                 <img th:src="@{/images/{img}(img=${product.imageUrl})}" th:alt="${product.name}">
                 <div class="card-body">
                     <h6 class="fw-bold text-dark" th:text="${product.name}">Tên sản phẩm</h6>
+
                     <p class="mb-1">
                         <!-- Hiển thị giá gốc (gạch ngang) nếu có sale -->
                         <span class="text-muted text-decoration-line-through me-1"
                               th:if="${product.salePrice != null}"
                               th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">
-    </span>
+                </span>
 
                         <!-- Hiển thị giá thực tế (ưu tiên sale nếu có) -->
                         <span class="fw-bold text-success"
                               th:text="${#numbers.formatDecimal((product.salePrice != null ? product.salePrice : product.price), 0, 'COMMA', 0, 'POINT')} + ' VND'">
-    </span>
+                </span>
                     </p>
 
+                    <!-- Nút xem chi tiết -->
+                    <a th:href="@{'/products/detail/' + ${product.id}}"
+                       class="btn btn-outline-success btn-sm w-100 mb-2">
+                        Xem chi tiết
+                    </a>
+
+                    <!-- Nút thêm giỏ -->
                     <button type="button" class="btn btn-frubana btn-sm w-100 add-to-cart-btn"
-                       th:attr="data-id=${product.id},data-name=${product.name},data-price=${product.salePrice != null ? product.salePrice : product.price},data-image=${product.imageUrl}">
-                       Thêm vào giỏ
+                            th:attr="data-id=${product.id},
+                        data-name=${product.name},
+                        data-price=${product.salePrice != null ? product.salePrice : product.price},
+                        data-image=${product.imageUrl}">
+                        Thêm vào giỏ
                     </button>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 <footer class="text-center py-4">

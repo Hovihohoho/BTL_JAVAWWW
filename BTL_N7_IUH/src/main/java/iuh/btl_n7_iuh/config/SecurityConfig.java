@@ -22,7 +22,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/forgot-password", "/change-password", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers(
+                                "/login",
+                                "/register",
+                                "/forgot-password",
+                                "/reset-password",
+                                "/change-password",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
+                        ).permitAll()
+
+                        // 🔥 Cho phép POST form (quan trọng)
+                        .requestMatchers("/register", "/forgot-password", "/reset-password").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -40,6 +53,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {

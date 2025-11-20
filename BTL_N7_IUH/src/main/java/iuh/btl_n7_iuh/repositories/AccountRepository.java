@@ -8,9 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-
     // ✅ Trả về Optional để dùng được .orElseThrow()
     Optional<Account> findByUsername(String username);
-
-    Optional<Account> findByEmail(String email);
+    Account findByEmail(String email);
+    Account findByResetToken(String token);
 }
