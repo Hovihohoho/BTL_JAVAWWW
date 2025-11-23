@@ -1,81 +1,142 @@
+/* Màu sắc thương hiệu Frubana */
+:root {
+    --frubana-primary: #6d9c3a;     /* Màu xanh lá chủ đạo */
+    --frubana-secondary: #5b8731;   /* Màu hover */
+    --frubana-light: #f5f9f2;       /* Nền nhẹ */
+    --frubana-dark-text: #343a40;   /* Màu chữ đậm */
+}
+
 /* Tổng thể layout */
 body {
-    font-family: "Segoe UI", sans-serif;
-    background-color: #f9f9f9;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--frubana-light);
     margin: 0;
     padding: 0;
     display: flex;
+    height: 100%;
 }
 
 /* Sidebar */
 .sidebar {
     width: 250px;
-    background-color: #6ab04c;
+    background-color: var(--frubana-primary);
     height: 100vh;
     display: flex;
     flex-direction: column;
     position: fixed;
     top: 0;
     left: 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    z-index: 1000;
 }
-
+/* Header/Logo trong Sidebar */
 .sidebar-header {
     padding: 20px;
-    background: #58b548;
+    background: var(--frubana-secondary); /* Nền đậm hơn */
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-align: center;
 }
-
-.sidebar .avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-}
-
+/* Menu items */
 .sidebar .nav-link {
-    color: #eaf0e6;
-    padding: 10px 20px;
+    color: #fff;
+    padding: 12px 20px;
+    border-left: 5px solid transparent;
+    transition: 0.3s;
     display: flex;
     align-items: center;
-    transition: 0.3s;
 }
-
-.sidebar .nav-link:hover, .sidebar .nav-link.active {
-    background-color: #7bed9f;
-    color: #000;
-    font-weight: 600;
+/* Active/Hover states */
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: var(--frubana-secondary);
+    color: #fff;
+    border-left: 5px solid #fff;
 }
-
+.sidebar .nav-link i {
+    font-size: 1.1rem;
+    width: 30px; /* Căn chỉnh icon */
+}
+/* Logout Section */
 .sidebar-footer {
     margin-top: auto;
     padding: 15px;
-    font-size: 13px;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Main content */
 .main-content {
     margin-left: 250px;
     width: calc(100% - 250px);
-    background-color: #fff;
+    background-color: #fff; /* Nền trắng cho nội dung chính */
     min-height: 100vh;
 }
 
+/* Navbar */
 .navbar {
     height: 60px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+}
+.navbar h6 {
+    color: var(--frubana-dark-text);
+    font-weight: 600;
 }
 
-.avatar-sm {
-    width: 32px;
-    height: 32px;
-    object-fit: cover;
+/* Các thẻ Admin Card */
+.card {
+    border: none;
+    border-radius: 10px;
+}
+.card-header {
+    background-color: #f8f9fa; /* Nền xám nhẹ cho header */
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+/* Tiêu đề trang */
+h2.page-title {
+    color: var(--frubana-dark-text);
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--frubana-primary);
+}
+
+/* Bảng dữ liệu */
+.table thead th {
+    background-color: var(--frubana-secondary); /* Màu xanh đậm cho đầu bảng */
+    color: #fff;
+    font-weight: 600;
+}
+.table tbody tr:hover {
+    background-color: var(--frubana-light);
+}
+
+/* Nút */
+.btn-success {
+    background-color: var(--frubana-primary);
+    border-color: var(--frubana-primary);
+    transition: background-color 0.2s;
+}
+.btn-success:hover {
+    background-color: var(--frubana-secondary);
+    border-color: var(--frubana-secondary);
+}
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #333;
+}
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
 }
 
 /* Responsive */
 @media (max-width: 992px) {
-    .sidebar {
-        width: 200px;
-    }
-    .main-content {
-        margin-left: 200px;
-    }
+    /* (Cần thêm logic ẩn/hiện sidebar bằng JS/Bootstrap nếu cần responsive hoàn chỉnh) */
+    .sidebar { width: 80px; }
+    .sidebar span { display: none; }
+    .main-content { margin-left: 80px; width: calc(100% - 80px); }
 }

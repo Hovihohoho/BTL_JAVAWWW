@@ -1,0 +1,56 @@
+<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, 'Quản lý Sản phẩm')}">
+
+  <div th:fragment="content">
+    <h2 class="fw-bold mb-4 page-title">
+      <i class="fas fa-shopping-basket me-2"></i> DANH SÁCH SẢN PHẨM
+    </h2>
+
+    <div class="card shadow">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 fw-bold text-primary">Quản lý Sản phẩm</h6>
+        <a th:href="@{/admin/products/add}" class="btn btn-success"><i class="fas fa-plus me-1"></i> Thêm mới</a>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 text-center">
+            <thead class="table-dark">
+            <tr>
+              <th style="width: 5%;">ID</th>
+              <th style="width: 25%;">Tên sản phẩm</th>
+              <th style="width: 8%;">Ảnh</th>
+              <th style="width: 10%;">Giá gốc</th>
+              <th style="width: 10%;">Giá sale</th>
+              <th style="width: 12%;">Danh mục</th>
+              <th style="width: 10%;">Ngày tạo</th>
+              <th style="width: 15%;">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+              <td th:text="${product.id}">1</td>
+              <td class="fw-semibold text-start" th:text="${product.name}">Dâu tây Đà Lạt</td>
+              <td>
+                <img th:src="@{'/images/' + ${product.imageUrl}}" alt="Ảnh" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+              </td>
+              <td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">65,000 VND</td>
+              <td th:class="${product.salePrice != null ? 'fw-bold text-danger' : 'text-muted'}"
+                  th:text="${product.salePrice != null ? #numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT') + ' VND' : '-'}">-</td>
+              <td th:text="${product.category.name}">Trái cây</td>
+              <td th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy')}">20/01/2025</td>
+              <td>
+                <a th:href="@{'/admin/products/edit/' + ${product.id}}" class="btn btn-sm btn-warning me-2"><i class="fas fa-edit"></i> Sửa</a>
+                <form th:action="@{'/admin/products/delete/' + ${product.id}}" method="post}" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                  <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i> Xóa</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(products)}">
+              <td colspan="8" class="text-center text-muted fst-italic py-3">Không tìm thấy sản phẩm nào.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

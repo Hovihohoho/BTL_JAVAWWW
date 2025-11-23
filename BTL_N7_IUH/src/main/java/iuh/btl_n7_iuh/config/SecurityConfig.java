@@ -22,20 +22,22 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(
+                                "/css/**",
+                                "/",
                                 "/login",
                                 "/register",
                                 "/forgot-password",
                                 "/reset-password",
-                                "/change-password",
-                                "/css/**",
+                                "/products/**",
+                                "/testimonials",
+                                "/contact",
+                                "/checkout/**",
+                                "/payment/**",
                                 "/js/**",
                                 "/images/**"
                         ).permitAll()
-
-                        // 🔥 Cho phép POST form (quan trọng)
-                        .requestMatchers("/register", "/forgot-password", "/reset-password").permitAll()
-
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

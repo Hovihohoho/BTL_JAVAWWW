@@ -1,58 +1,71 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-</head>
-<body>
-<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, 'Quản lý Tài khoản')}">
+<div th:fragment="content">
+    <h2 class="fw-bold mb-4">
+        <i class="fas fa-users me-2 text-primary"></i> Quản lý Tài khoản
+    </h2>
 
-    <div th:fragment="content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="fas fa-users me-2"></i>DANH SÁCH TÀI KHOẢN</h2>
-            <a th:href="@{/admin/accounts/new}" class="btn btn-success">
-                <i class="fas fa-plus-circle"></i> + Thêm mới
-            </a>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 fw-bold text-primary">Danh Sách Người Dùng</h6>
+            <a th:href="@{/admin/accounts/add}" class="btn btn-success btn-sm"><i class="fas fa-plus me-1"></i> Thêm mới</a>
         </div>
-
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
+        <div class="card-body">
+            <div class="table-responsive">
                 <table class="table table-hover mb-0">
-                    <thead class="table-light">
+                    <thead class="table-primary text-white">
                     <tr>
-                        <th>#</th>
-                        <th>Tên đăng nhập</th>
-                        <th>Họ và tên</th>
+                        <th>ID</th>
+                        <th>Tên người dùng</th>
                         <th>Email</th>
+                        <th>Quyền hạn</th>
                         <th>Trạng thái</th>
-                        <th>Vai trò</th>
-                        <th>Chức năng</th>
+                        <th>Thao tác</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="account, i : ${accounts}">
+                    <tr th:each="account : ${accounts}">
                         <td th:text="${account.id}">1</td>
-                        <td th:text="${account.username}">canhdz</td>
-                        <td th:text="${account.accountDetail != null ? account.accountDetail.fullName : 'Chưa cập nhật'}">Nguyễn Văn A</td>
-                        <td th:text="${account.email}">user@gmail.com</td>
+                        <td th:text="${account.accountDetail.fullName}">Nguyễn Văn A</td>
+                        <td th:text="${account.username}">nguyenvana@example.com</td>
+                        <td th:text="${account.role.roleName}">ROLE_USER</td>
                         <td>
-                            <span th:classappend="${account.isEnabled ? 'bg-success' : 'bg-danger'}" class="badge text-white" th:text="${account.isEnabled ? 'Hoạt động' : 'Khóa'}">Hoạt động</span>
+                                <span th:class="${account.isEnabled ? 'badge bg-success' : 'badge bg-danger'}"
+                                      th:text="${account.isEnabled ? 'Hoạt động' : 'Bị khóa'}">Hoạt động</span>
                         </td>
                         <td>
-                            <span th:classappend="${account.role.name == 'ROLE_ADMIN' ? 'bg-primary' : 'bg-secondary'}" class="badge text-white" th:text="${account.role != null ? account.role.name : 'N/A'}">ROLE_USER</span>
+                            <a th:href="@{'/admin/accounts/edit/' + ${account.id}}" class="btn btn-sm btn-info me-2"><i class="fas fa-edit"></i> Sửa</a>
+                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" th:data-bs-target="'#deleteModal' + ${account.id}">
+                                <i class="fas fa-trash-alt"></i> Xóa
+                            </button>
+
+                            <div class="modal fade" th:id="'deleteModal' + ${account.id}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Xác nhận xóa</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Bạn có chắc chắn muốn xóa tài khoản **<span th:text="${account.accountDetail.fullName}"></span>** không?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                            <form th:action="@{'/admin/accounts/delete/' + ${account.id}}" method="post" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger">Xóa</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
-                        <td>
-                            <a th:href="@{'/admin/accounts/edit/' + ${account.id}}" class="btn btn-sm btn-info me-1"><i class="fas fa-edit"></i> Sửa</a>
-                            <form th:action="@{'/admin/accounts/delete/' + ${account.id}}" method="post" style="display:inline;">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?');"><i class="fas fa-trash"></i> Xóa</button>
-                            </form>
-                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(accounts)}">
+                        <td colspan="6" class="text-center">Không tìm thấy tài khoản nào.</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
-
 </div>
-</body>
-</html>
+
+<div th:replace="admin/layout/main_layout :: layout(~{::content}, 'Quản lý Tài khoản')"></div>

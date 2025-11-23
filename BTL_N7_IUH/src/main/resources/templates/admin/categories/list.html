@@ -1,0 +1,47 @@
+<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, 'Quản lý Danh mục')}">
+
+    <div th:fragment="content">
+        <h2 class="fw-bold mb-4 page-title">
+            <i class="fas fa-list me-2"></i> DANH SÁCH DANH MỤC
+        </h2>
+
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 fw-bold text-primary">Quản lý Danh mục</h6>
+                <a th:href="@{/admin/categories/add}" class="btn btn-success"><i class="fas fa-plus me-1"></i> Thêm mới</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 text-center">
+                        <thead class="table-dark">
+                        <tr>
+                            <th style="width: 5%;">Mã số</th>
+                            <th style="width: 15%;">Tên</th>
+                            <th style="width: 40%;">Mô tả</th>
+                            <th style="width: 10%;">Slug</th>
+                            <th style="width: 15%;">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="category : ${categories}">
+                            <td th:text="${category.id}">1</td>
+                            <td class="fw-semibold text-start" th:text="${category.name}">Trái Cây</td>
+                            <td class="text-start" th:text="${category.description}">Mô tả ngắn về danh mục này...</td>
+                            <td th:text="${category.slug}">trai-cay</td>
+                            <td>
+                                <a th:href="@{'/admin/categories/edit/' + ${category.id}}" class="btn btn-sm btn-warning me-2"><i class="fas fa-edit"></i> Sửa</a>
+                                <form th:action="@{'/admin/categories/delete/' + ${category.id}}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
+                                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i> Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(categories)}">
+                            <td colspan="5" class="text-center text-muted fst-italic py-3">Không tìm thấy danh mục nào.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
