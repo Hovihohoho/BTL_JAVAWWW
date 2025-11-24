@@ -63,16 +63,13 @@ public class HomeController {
         return "login";
     }
 
-    @GetMapping("/contact")
-    public String contactPage(){
-        return "contact";
-    }
-<<<<<<<< HEAD:BTL_N7_IUH/src/main/java/iuh/btl_n7_iuh/controllers/HomeController.java
-
-    @GetMapping("/cart")
-    public String cartPage() {
-        return "cart";
-    }
-========
->>>>>>>> f084c87a45f8257c89fca88bbcc28380e70bb484:BTL_N7_IUH/src/main/java/iuh/btl_n7_iuh/controller/HomeController.java
+    // Xóa hoặc comment các mapping trùng lặp với controller khác
+    // @GetMapping("/contact")
+    // public String contactPage(){
+    //     return "contact";
+    // }
+    // @GetMapping("/cart")
+    // public String cartPage() {
+    //     return "cart";
+    // }
 }
