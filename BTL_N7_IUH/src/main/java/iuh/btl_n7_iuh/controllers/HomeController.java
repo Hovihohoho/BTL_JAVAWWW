@@ -63,13 +63,13 @@ public class HomeController {
         return "login";
     }
 
-    @GetMapping("/contact")
-    public String contactPage(){
-        return "contact";
-    }
-
-    @GetMapping("/cart")
-    public String cartPage() {
-        return "cart";
-    }
+    // Xóa hoặc comment các mapping trùng lặp với controller khác
+    // @GetMapping("/contact")
+    // public String contactPage(){
+    //     return "contact";
+    // }
+    // @GetMapping("/cart")
+    // public String cartPage() {
+    //     return "cart";
+    // }
 }

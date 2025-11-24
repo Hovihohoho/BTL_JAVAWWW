@@ -1,0 +1,40 @@
+<!-- Sử dụng layout fragment, không lồng <html>, <head>, <body> -->
+<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, 'Quản lý liên hệ')}">
+  <div th:fragment="content">
+    <h2 class="fw-bold mb-4 page-title">
+      <i class="fas fa-envelope me-2"></i> DANH SÁCH LIÊN HỆ
+    </h2>
+    <div class="card shadow">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 fw-bold text-primary">Quản lý liên hệ</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 text-center">
+            <thead class="table-dark">
+            <tr>
+              <th style="width: 5%;">ID</th>
+              <th style="width: 20%;">Tên</th>
+              <th style="width: 20%;">Email</th>
+              <th style="width: 35%;">Nội dung</th>
+              <th style="width: 10%;">Ngày gửi</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="contact : ${contacts}">
+              <td th:text="${contact.id}"></td>
+              <td class="fw-semibold text-start" th:text="${contact.name}"></td>
+              <td th:text="${contact.email}"></td>
+              <td class="text-start" th:text="${contact.message}"></td>
+              <td th:text="${#temporals.format(contact.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(contacts)}">
+              <td colspan="5" class="text-center text-muted fst-italic py-3">Không tìm thấy liên hệ nào.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
