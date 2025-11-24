@@ -5,6 +5,9 @@
             <i class="fas fa-list me-2"></i> DANH SÁCH DANH MỤC
         </h2>
 
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
         <div class="card shadow">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 fw-bold text-primary">Quản lý Danh mục</h6>
@@ -30,7 +33,7 @@
                             <td th:text="${category.slug}">trai-cay</td>
                             <td>
                                 <a th:href="@{'/admin/categories/edit/' + ${category.id}}" class="btn btn-sm btn-warning me-2"><i class="fas fa-edit"></i> Sửa</a>
-                                <form th:action="@{'/admin/categories/delete/' + ${category.id}}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
+                                <form th:action="@{'/admin/categories/delete/' + ${category.id}}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này? Lưu ý: Việc xóa danh mục có thể bị lỗi nếu có sản phẩm liên quan.');">
                                     <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i> Xóa</button>
                                 </form>
                             </td>
