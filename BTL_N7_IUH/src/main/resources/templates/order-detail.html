@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng | Frubana</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container py-4">
+    <h3 class="text-frubana mb-3">Chi tiết đơn hàng #<span th:text="${order.id}"></span></h3>
+    <p>Ngày đặt: <span th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></span></p>
+    <p>Trạng thái: <span th:text="${order.orderStatus.name}"></span></p>
+    <p>Phương thức thanh toán: <span th:text="${order.paymentMethod}"></span></p>
+    <p>Địa chỉ giao hàng: <span th:text="${order.shippingAddress}"></span></p>
+
+    <table class="table table-bordered mt-3">
+        <thead class="table-light">
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="detail : ${order.orderDetails}">
+            <td th:text="${detail.product.name}"></td>
+            <td th:text="${detail.quantity}"></td>
+            <td th:text="${#numbers.formatDecimal(detail.price, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+            <td th:text="${#numbers.formatDecimal(detail.price * detail.quantity, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/orders}" class="btn btn-outline-secondary mt-3">← Quay lại danh sách</a>
+</div>
+</body>
+</html>

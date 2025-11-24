@@ -26,6 +26,21 @@ public class HomeController {
     @GetMapping("/")
     public String homePage(Model model) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Kiểm tra nếu người dùng đã được xác thực (không phải anonymous)
+        if (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser")) {
+
+            // Dùng stream để kiểm tra nếu người dùng có quyền ROLE_ADMIN
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+            if (isAdmin) {
+                // Nếu là Admin, chuyển hướng đến trang quản trị
+                return "redirect:/admin";
+            }
+        }
+
         // Lấy danh sách sản phẩm nổi bật từ tầng Service
         // Đảm bảo ProductServices có phương thức getFeaturedProducts()
         List<Product> featuredProducts = productServices.getFeaturedProducts();

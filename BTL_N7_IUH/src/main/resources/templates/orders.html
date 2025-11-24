@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn hàng của tôi | Frubana</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --frubana-green: #6d9c3a; --frubana-dark-green: #5b8731; }
+        body { font-family: "Segoe UI", sans-serif; background-color: #f6fdf4; }
+        .text-frubana { color: var(--frubana-green); }
+        .card { border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .order-item:hover { background-color: #f9fdf6; transition: 0.3s; }
+    </style>
+</head>
+<body>
+<div class="container py-4">
+    <h3 class="text-center text-frubana mb-4 fw-bold">ĐƠN HÀNG CỦA TÔI</h3>
+
+    <div th:if="${#lists.isEmpty(orders)}" class="alert alert-warning text-center">
+        Bạn chưa có đơn hàng nào.
+    </div>
+
+    <div class="row" th:each="order : ${orders}">
+        <div class="col-12 mb-3">
+            <div class="card order-item p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1 text-frubana">Đơn hàng #<span th:text="${order.id}"></span></h5>
+                        <p class="mb-1">📅 Ngày đặt: <span th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></span></p>
+                        <p class="mb-1">🏷️ Trạng thái: <strong th:text="${order.orderStatus.name}"></strong></p>
+                        <p class="mb-1">💰 Tổng tiền: <strong th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></strong></p>
+                        <p class="mb-1">💳 Thanh toán: <span th:text="${order.paymentMethod}"></span></p>
+                    </div>
+                    <div>
+                        <a th:href="@{'/orders/' + ${order.id}}" class="btn btn-outline-success btn-sm">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

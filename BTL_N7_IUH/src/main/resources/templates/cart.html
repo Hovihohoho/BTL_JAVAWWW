@@ -125,15 +125,6 @@
             </div>
         </div>
     </nav>
-    <!-- DEBUG info (nếu cần) -->
-    <div class="container mt-3">
-        <div class="alert alert-secondary small">
-            <b>DEBUG:</b>
-            Username = <span sec:authentication="principal.username"></span> |
-            Fullname = <span sec:authentication="principal.fullName"></span> |
-            Role = <span sec:authentication="principal.authorities"></span>
-        </div>
-    </div>
     <!-- Banner Giỏ Hàng -->
     <div class="cart-banner mb-4">
         <div class="container">
@@ -209,7 +200,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="bg-white p-4 rounded shadow-sm h-100">
-                            <h5 class="mb-3 text-frubana">Tổng thanh toán</h5>
+                            <p><strong>Tổng thanh toán:</strong> <span th:text="${#numbers.formatDecimal(amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span></p>
                             <ul class="list-group mb-3">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     Tạm tính:
@@ -227,19 +218,22 @@
                             <div class="mb-3">
                                 <label class="form-label">Phương thức thanh toán</label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment" id="cod" checked>
+                                    <input class="form-check-input" type="radio" name="payment" id="cod" value="cod" checked>
                                     <label class="form-check-label" for="cod">Thanh toán khi nhận hàng (COD)</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment" id="vnpay">
-                                    <label class="form-check-label" for="vnpay">Chuyển khoản ngân hàng VNpay</label>
+                                    <input class="form-check-input" type="radio" name="payment" id="online" value="online">
+                                    <label class="form-check-label" for="online">Thanh toán Online (VNPay / MoMo)</label>
                                 </div>
                             </div>
+
                             <div class="form-check mb-3">
                                 <input class="form-check-input" type="checkbox" id="agree" required>
                                 <label class="form-check-label" for="agree">Tôi đồng ý với các điều khoản và điều kiện</label>
                             </div>
-                            <button type="submit" class="btn btn-success w-100 py-2 fw-bold"><i class="fa fa-check me-1"></i> Xác nhận đặt hàng</button>
+                            <a th:href="@{/checkout}" class="btn btn-success w-100 py-2 fw-bold">
+                                <i class="fa fa-credit-card me-1"></i> Thanh toán
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -252,3 +246,109 @@
     <script src="/script/cart_badge.js"></script>
 </body>
 </html>
+<script>
+    function updateCartTotals() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        let subtotal = 0;
+        cart.forEach(item => {
+            subtotal += item.price * item.quantity;
+        });
+
+        const shipping = 15000; // ví dụ 15.000 VND
+        const grandTotal = subtotal + shipping;
+
+        // ✅ Cập nhật ra HTML
+        document.getElementById("cart-subtotal-js").innerText = subtotal.toLocaleString("vi-VN") + " VND";
+        document.getElementById("cart-shipping-js").innerText = shipping.toLocaleString("vi-VN") + " VND";
+        document.getElementById("cart-grandtotal-js").innerText = grandTotal.toLocaleString("vi-VN") + " VND";
+    }
+
+    // Gọi hàm này sau khi render xong danh sách giỏ hàng
+    updateCartTotals();
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const checkoutBtn = document.querySelector('a.btn.btn-success.w-100');
+
+        checkoutBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const name = document.querySelector('input[placeholder="Nhập họ tên"]').value.trim();
+            const address = document.querySelector('input[placeholder="Nhập địa chỉ"]').value.trim();
+            const phone = document.querySelector('input[placeholder="Nhập số điện thoại"]').value.trim();
+            const agree = document.querySelector('#agree').checked;
+            const payment = document.querySelector('input[name="payment"]:checked').value;
+
+            const nameRegex = /^[A-Za-zÀ-ỹ\s]{5,50}$/;
+            const addressRegex = /^.{5,100}$/;
+            const phoneRegex = /^(0[3|5|7|8|9])[0-9]{8}$/;
+
+            if (!nameRegex.test(name)) {
+                alert("❌ Họ tên không hợp lệ!");
+                return;
+            }
+            if (!addressRegex.test(address)) {
+                alert("❌ Địa chỉ không hợp lệ!");
+                return;
+            }
+            if (!phoneRegex.test(phone)) {
+                alert("❌ Số điện thoại không hợp lệ!");
+                return;
+            }
+            if (!agree) {
+                alert("⚠️ Vui lòng đồng ý với điều khoản trước khi thanh toán!");
+                return;
+            }
+
+            // ✅ Lấy giỏ hàng từ localStorage
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// ✅ Tính lại tổng tiền
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+
+            const shipping = 15000; // hoặc 15000, tuỳ bạn cấu hình
+            const grandTotal = subtotal + shipping;
+
+            console.log("🧮 Tổng tiền gửi qua backend:", grandTotal);
+
+
+            console.log("🧮 Tổng tiền gửi qua backend:", grandTotal);
+
+            // ✅ Điều hướng tới backend
+            if (payment === "cod") {
+                window.location.href = `/checkout/cod?amount=${grandTotal}`;
+            } else if (payment === "online") {
+                // ⚡ Gọi tới controller VNPay
+                window.location.href = `/payment/vnpay?amount=${grandTotal}`;
+            }
+        });
+    });
+    // ✅ Hàm cập nhật tổng số sản phẩm hiển thị trên biểu tượng giỏ hàng
+    function updateCartBadge() {
+        const badge = document.querySelector(".badge.bg-danger");
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // Cộng dồn số lượng từng sản phẩm
+        const totalQuantity = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+
+        badge.textContent = totalQuantity;
+
+        // Ẩn badge nếu giỏ trống
+        if (totalQuantity === 0) {
+            badge.style.display = "none";
+        } else {
+            badge.style.display = "inline-block";
+        }
+    }
+
+    // ✅ Gọi ngay khi trang vừa tải
+    document.addEventListener("DOMContentLoaded", function () {
+        updateCartBadge();
+    });
+
+</script>
+
+

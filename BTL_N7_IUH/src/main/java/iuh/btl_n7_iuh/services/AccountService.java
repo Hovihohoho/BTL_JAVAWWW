@@ -40,4 +40,28 @@ public class AccountService {
         // ✅ Lưu account (Hibernate cascade ALL sẽ tự lưu AccountDetail)
         return accountRepository.save(account);
     }
+
+    public Account findByEmail(String email) {
+        return accountRepository.findByEmail(email);
+    }
+
+    public void updateResetToken(String token, String email) throws Exception {
+        Account account = findByEmail(email);
+        if (account == null) {
+            throw new Exception("Email không tồn tại");
+        }
+        account.setResetToken(token);
+        accountRepository.save(account);
+    }
+
+    public Account getByResetToken(String token) {
+        return accountRepository.findByResetToken(token);
+    }
+
+    public void updatePassword(Account account, String newPassword) {
+        account.setPassword(newPassword); // nhớ mã hóa nếu dùng BCrypt
+        account.setResetToken(null);
+        accountRepository.save(account);
+    }
+
 }
