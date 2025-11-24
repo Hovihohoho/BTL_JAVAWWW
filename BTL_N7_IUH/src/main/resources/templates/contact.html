@@ -247,6 +247,10 @@
                 <textarea name="message" placeholder="Nội dung" required></textarea>
                 <div class="error">Nội dung không được để trống</div>
                 <button type="submit">Gửi liên hệ</button>
+                <div th:if="${success != null}" class="mt-3">
+                    <div th:if="${success}" class="alert alert-success">Gửi liên hệ thành công!</div>
+                    <div th:if="${!success}" class="alert alert-danger">Gửi liên hệ thất bại. Vui lòng thử lại.</div>
+                </div>
             </form>
             <div class="contact-info">
                 <div class="info-box">

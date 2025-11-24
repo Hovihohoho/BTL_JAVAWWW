@@ -6,14 +6,20 @@
     --frubana-dark-text: #343a40;   /* Màu chữ đậm */
 }
 
+/* ✅ Sửa lỗi: Đảm bảo box-sizing được thiết lập */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* Tổng thể layout */
 body {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--frubana-light);
     margin: 0;
     padding: 0;
-    display: flex;
-    height: 100%;
+    /* Xóa display: flex; và flex-grow: 1 */
+    height: 100vh; /* Đặt chiều cao chính xác cho body */
+    overflow-x: hidden; /* Ngăn cuộn ngang không mong muốn */
 }
 
 /* Sidebar */
@@ -23,7 +29,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    position: fixed;
+    position: fixed; /* Giữ Sidebar cố định */
     top: 0;
     left: 0;
     box-shadow: 2px 0 10px rgba(0,0,0,0.2);
@@ -67,8 +73,10 @@ body {
 
 /* Main content */
 .main-content {
-    margin-left: 250px;
+    margin-left: 250px; /* Bù trừ cho Sidebar */
+    /* ✅ Sửa lỗi: Buộc width chiếm 100% viewport trừ đi chiều rộng Sidebar */
     width: calc(100% - 250px);
+
     background-color: #fff; /* Nền trắng cho nội dung chính */
     min-height: 100vh;
 }
@@ -138,5 +146,6 @@ h2.page-title {
     /* (Cần thêm logic ẩn/hiện sidebar bằng JS/Bootstrap nếu cần responsive hoàn chỉnh) */
     .sidebar { width: 80px; }
     .sidebar span { display: none; }
+    /* Cập nhật lại phép tính cho responsive */
     .main-content { margin-left: 80px; width: calc(100% - 80px); }
 }

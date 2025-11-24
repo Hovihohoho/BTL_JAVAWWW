@@ -1,0 +1,74 @@
+<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, ${title})}">
+
+    <div th:fragment="content">
+        <h2 class="fw-bold mb-4 page-title">
+            <i class="fas fa-shopping-basket me-2"></i>
+            <span th:text="${product.id == null ? 'THÊM MỚI SẢN PHẨM' : 'SỬA SẢN PHẨM'}"></span>
+        </h2>
+
+        <div class="card shadow col-lg-10 mx-auto">
+            <div class="card-body p-4">
+                <form th:action="@{/admin/products/save}" method="post" th:object="${product}" enctype="multipart/form-data">
+
+                    <input type="hidden" th:field="*{id}" />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-bold">Tên Sản phẩm (*)</label>
+                                <input type="text" th:field="*{name}" id="name" class="form-control" required/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="category_id" class="form-label fw-bold">Danh mục (*)</label>
+                                <select id="category_id" name="category_id" class="form-select" required>
+                                    <option value="">-- Chọn Danh mục --</option>
+                                    <option th:each="cat : ${categories}"
+                                            th:value="${cat.id}"
+                                            th:text="${cat.name}"
+                                            th:selected="${product.category != null && product.category.id == cat.id}">
+                                        Trái Cây
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="price" class="form-label fw-bold">Giá gốc (*)</label>
+                                <input type="number" step="1000" min="0" th:field="*{price}" id="price" class="form-control" required/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="salePrice" class="form-label fw-bold">Giá khuyến mãi (để trống nếu không sale)</label>
+                                <input type="number" step="1000" min="0" th:field="*{salePrice}" id="salePrice" class="form-control"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label fw-bold">Mô tả chi tiết</label>
+                                <textarea th:field="*{description}" id="description" class="form-control" rows="5"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="imageFile" class="form-label fw-bold">Ảnh sản phẩm (*)</label>
+                                <input type="file" id="imageFile" name="imageFile" class="form-control" accept="image/*" th:required="${product.id == null}"/>
+                            </div>
+
+                            <div th:if="${product.imageUrl != null}">
+                                <p class="fw-bold">Ảnh hiện tại:</p>
+                                <img th:src="@{/images/{img}(img=${product.imageUrl})}" style="max-width: 250px; border: 1px solid #ddd; border-radius: 8px;"/>
+                                <input type="hidden" th:field="*{imageUrl}" />
+                            </div>
+
+                            <input type="hidden" th:field="*{createdAt}" />
+
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success mt-3"><i class="fas fa-save me-1"></i> Lưu Sản phẩm</button>
+                    <a th:href="@{/admin/products}" class="btn btn-secondary mt-3">Hủy</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
