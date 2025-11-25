@@ -1,0 +1,91 @@
+<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, 'Quản lý Bình luận')}">
+
+    <div th:fragment="content">
+
+        <h2 class="fw-bold mb-4 page-title">
+            <i class="fas fa-comments me-2"></i> DANH SÁCH BÌNH LUẬN
+        </h2>
+
+        <!-- Thông báo -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 fw-bold text-primary">Quản lý Bình luận</h6>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <table class="table table-hover mb-0 text-center align-middle">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên khách</th>
+                            <th>Sản phẩm</th>
+                            <th>Nội dung</th>
+                            <th>Đánh giá</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <!-- Danh sách bình luận -->
+                        <tr th:each="c : ${comments}">
+                            <td th:text="${c.id}"></td>
+
+                            <!-- Tên khách -->
+                            <td th:text="${c.account.accountDetail.fullName}"></td>
+
+                            <!-- Tên sản phẩm -->
+                            <td th:text="${c.product.name}"></td>
+
+                            <!-- Nội dung -->
+                            <td class="text-start" th:text="${c.content}"></td>
+
+                            <!-- Đánh giá -->
+                            <td>
+                                <span th:each="i : ${#numbers.sequence(1,5)}">
+                                    <i th:class="${i <= c.rating}
+                                        ? 'bi bi-star-fill text-warning'
+                                        : 'bi bi-star text-secondary'"></i>
+                                </span>
+                            </td>
+
+
+
+                            <!-- Ngày tạo -->
+                            <td th:text="${#temporals.format(c.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+
+                            <!-- Nút xóa -->
+                            <td>
+                                <form th:action="@{'/admin/comments/delete/' + ${c.id}}"
+                                      method="post"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt"></i> Xóa
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <!-- Nếu không có bình luận -->
+                        <tr th:if="${#lists.isEmpty(comments)}">
+                            <td colspan="7" class="text-muted text-center fst-italic py-3">
+                                Không có bình luận nào.
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

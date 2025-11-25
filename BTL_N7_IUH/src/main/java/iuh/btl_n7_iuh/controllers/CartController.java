@@ -7,9 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class CartController {
 
+    @GetMapping("/cart")
+    public String cartPage(Model model) {
+        return "cart";  // => templates/cart.html
+    }
+
     @GetMapping("/checkout")
     public String checkoutPage(Model model) {
-        // có thể truyền thêm tổng tiền, danh sách sản phẩm
-        return "checkout";
+        return "checkout"; // => templates/checkout.html
     }
 }
