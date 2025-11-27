@@ -31,11 +31,12 @@ public class AdminController {
     /**
      * Màn hình Quản lý Tài khoản (GIỮ LẠI)
      */
-    @GetMapping("/accounts")
-    public String manageAccounts(Model model) {
-        List<Account> accounts = accountRepository.findAll();
-        model.addAttribute("accounts", accounts);
-        model.addAttribute("title", "Quản lý Tài khoản - Frubana");
-        return "admin/accounts/list";
+/**    @GetMapping("/accounts")
+//    public String manageAccounts(Model model) {
+//        List<Account> accounts = accountRepository.findAll();
+//        model.addAttribute("accounts", accounts);
+//        model.addAttribute("title", "Quản lý Tài khoản - Frubana");
+//        return "admin/accounts/list";
     }
+*/
 }
