@@ -87,6 +87,7 @@
             resize: vertical;
         }
         .contact-form .error {
+            display: none;
             color: #d32f2f;
             font-size: 0.95rem;
             margin-bottom: 8px;
@@ -239,13 +240,13 @@
             <iframe src="https://www.google.com/maps?q=235+Hoàng+Quốc+Việt,+Bắc+Từ+Liêm,+Hà+Nội&output=embed" width="100%" height="100%" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
         </div>
         <div class="contact-main">
-            <form class="contact-form" method="post" action="/contact">
-                <input type="text" name="name" placeholder="Tên Của bạn" required>
-                <div class="error">Tên không được để trống</div>
-                <input type="email" name="email" placeholder="Email Của bạn" required>
-                <div class="error">Email không được để trống</div>
-                <textarea name="message" placeholder="Nội dung" required></textarea>
-                <div class="error">Nội dung không được để trống</div>
+            <form class="contact-form" method="post" th:action="@{/contact}" th:object="${contact}" id="contactForm" novalidate>
+                <input type="text" th:field="*{name}" placeholder="Tên Của bạn" required>
+                <div class="error" id="nameError" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Tên không được để trống</div>
+                <input type="email" th:field="*{email}" placeholder="Email Của bạn" required>
+                <div class="error" id="emailError" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email không được để trống</div>
+                <textarea th:field="*{message}" placeholder="Nội dung" required></textarea>
+                <div class="error" id="messageError" th:if="${#fields.hasErrors('message')}" th:errors="*{message}">Nội dung không được để trống</div>
                 <button type="submit">Gửi liên hệ</button>
                 <div th:if="${success != null}" class="mt-3">
                     <div th:if="${success}" class="alert alert-success">Gửi liên hệ thành công!</div>
@@ -279,5 +280,39 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/script/cart_badge.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('contactForm');
+        var name = form.elements['name'];
+        var email = form.elements['email'];
+        var message = form.elements['message'];
+        var nameError = document.getElementById('nameError');
+        var emailError = document.getElementById('emailError');
+        var messageError = document.getElementById('messageError');
+
+        form.addEventListener('submit', function(e) {
+            var valid = true;
+            if (!name.value.trim()) {
+                nameError.style.display = 'block';
+                valid = false;
+            } else {
+                nameError.style.display = 'none';
+            }
+            if (!email.value.trim()) {
+                emailError.style.display = 'block';
+                valid = false;
+            } else {
+                emailError.style.display = 'none';
+            }
+            if (!message.value.trim()) {
+                messageError.style.display = 'block';
+                valid = false;
+            } else {
+                messageError.style.display = 'none';
+            }
+            if (!valid) e.preventDefault();
+        });
+    });
+    </script>
 </body>
 </html>
