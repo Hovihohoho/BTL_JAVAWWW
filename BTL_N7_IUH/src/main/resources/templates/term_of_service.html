@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Frubana - Rau củ quả hữu cơ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <!-- Swiper -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+    <style>
+        :root {
+            --frubana-green:#6d9c3a;
+            --frubana-dark-green:#5cb85c;
+            --frubana-yellow:#f8c057;
+        }
+        .text-frubana{color:var(--frubana-green);}
+        .bg-frubana{background-color:var(--frubana-dark-green)!important;}
+        .btn-frubana{background-color:var(--frubana-green);color:#fff;border:none;}
+        .btn-frubana:hover{background-color:#5b8731;color:#fff;}
+
+        /* Hero */
+        .hero {
+            background:url('https://bloganchoi.com/wp-content/uploads/2018/06/cac-loai-trai-cay.jpg')
+            center/cover no-repeat;
+            min-height:260px;
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.35);
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="top-bar py-2 bg-frubana text-white" style="font-size:.8rem;">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="contact-info d-none d-md-block">
+            <span class="me-3"><i class="fas fa-map-marker-alt"></i> Địa chỉ: 235 Hoàng Quốc Việt, Bắc Từ Liêm, Hà Nội</span>
+            <span><i class="fas fa-envelope"></i> Email: apteact@gmail.com</span>
+        </div>
+        <div>
+            <a th:href="@{/privary}" class="text-white text-decoration-none me-3">Chính sách bảo mật</a>
+            <a th:href="@{/term_of_service}" class="text-white text-decoration-none">Điều khoản dịch vụ</a>
+        </div>
+    </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fs-2 fw-bold text-frubana" th:href="@{/}">Frubana</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold">
+                <li class="nav-item">
+                    <a class="nav-link text-frubana active" th:href="@{/}">Trang chủ</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">Sản phẩm</a>
+                    <ul class="dropdown-menu border-0 shadow-sm" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" th:href="@{/products/vegetable}">Rau củ quả</a></li>
+                        <li><a class="dropdown-item" th:href="@{/products/fruit}">Trái cây</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/products/all}">Xem tất cả</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link text-dark" th:href="@{/testimonials}">Lời chứng thực</a></li>
+                <li class="nav-item"><a class="nav-link text-dark" th:href="@{/contact}">Liên hệ</a></li>
+            </ul>
+
+            <div class="d-flex align-items-center">
+                <button class="btn p-2" type="button" title="Tìm kiếm"><i class="fas fa-search text-dark"></i></button>
+                <a th:href="@{/cart}" class="btn position-relative me-3" title="Giỏ hàng">
+                    <i class="fa fa-shopping-bag text-frubana fs-5"></i>
+                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
+                          th:text="${totalQuantity != null ? totalQuantity : 0}">0</span>
+                </a>
+
+                <div class="dropdown ms-2" sec:authorize="isAuthenticated()">
+                    <button class="btn dropdown-toggle text-dark fw-semibold" type="button" id="userMenu"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-1"></i>
+                        <span sec:authentication="name">Tên người dùng</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item" th:href="@{/profile}">Thông tin cá nhân</a></li>
+                        <li><a class="dropdown-item" th:href="@{/orders}">Lịch sử đơn hàng</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="m-0">
+                                <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="d-flex ms-2" sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}" class="btn btn-outline-success me-2">Đăng nhập</a>
+                    <a th:href="@{/register}" class="btn btn-success">Đăng ký</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+
+<div class="hero mb-4">
+    <h1 class="display-4 fw-bold text-center">Điều khoản dịch vụ</h1>
+</div>
+<!-- Main Content -->
+<div class="container mb-5">
+    <div class="card shadow-sm p-4">
+        <h2>Điều khoản dịch vụ</h2>
+        <p>Khi sử dụng website Frubana, bạn đã đồng ý tuân thủ các điều khoản dịch vụ dưới đây. Vui lòng đọc kỹ để đảm bảo quyền lợi của bạn.</p>
+
+        <hr>
+
+        <h3>1. Giới thiệu</h3>
+        <p>Frubana là nền tảng cung cấp rau củ quả tươi – sạch – an toàn. Khi truy cập hoặc mua hàng trên website, bạn xác nhận rằng bạn đã đọc và đồng ý với các điều khoản này.</p>
+
+        <h3>2. Tài khoản người dùng</h3>
+        <ul>
+            <li>Bạn phải cung cấp thông tin chính xác khi đăng ký tài khoản.</li>
+            <li>Bạn chịu trách nhiệm bảo mật mật khẩu và hoạt động trên tài khoản của mình.</li>
+            <li>Chúng tôi có quyền khóa tài khoản nếu phát hiện hành vi gian lận hoặc vi phạm quy định.</li>
+        </ul>
+
+        <h3>3. Đặt hàng và thanh toán</h3>
+        <ul>
+            <li>Đơn hàng chỉ hợp lệ khi bạn nhận được email hoặc thông báo xác nhận từ Frubana.</li>
+            <li>Giá sản phẩm có thể thay đổi theo thời điểm nhưng sẽ được thông báo rõ trước khi đặt hàng.</li>
+            <li>Khách hàng có trách nhiệm kiểm tra thông tin đơn hàng trước khi xác nhận.</li>
+        </ul>
+
+        <h3>4. Giao hàng</h3>
+        <ul>
+            <li>Thời gian giao hàng từ 30 phút – 24 giờ tùy vị trí.</li>
+            <li>Nếu gặp sự cố do thời tiết, vận chuyển hoặc tồn kho, chúng tôi sẽ thông báo ngay cho khách hàng.</li>
+        </ul>
+
+        <h3>5. Chính sách đổi trả</h3>
+        <ul>
+            <li>Khách hàng được quyền đổi trả sản phẩm khi sản phẩm bị hư hỏng, không đúng mô tả hoặc không đạt tiêu chuẩn chất lượng.</li>
+            <li>Thời gian yêu cầu đổi trả: trong vòng 24 giờ sau khi nhận hàng.</li>
+            <li>Không áp dụng đổi trả với các sản phẩm đã qua chế biến hoặc hỏng do bảo quản không đúng cách.</li>
+        </ul>
+
+        <h3>6. Nghĩa vụ của khách hàng</h3>
+        <ul>
+            <li>Cung cấp thông tin giao hàng chính xác.</li>
+            <li>Không sử dụng website vào mục đích gây hại, phá hoại hệ thống.</li>
+            <li>Thanh toán đầy đủ cho các đơn hàng đã xác nhận.</li>
+        </ul>
+
+        <h3>7. Giới hạn trách nhiệm</h3>
+        <p>Frubana không chịu trách nhiệm cho các thiệt hại gián tiếp bao gồm mất mát thông tin, mất lợi nhuận hoặc gián đoạn dịch vụ.</p>
+
+        <h3>8. Thay đổi điều khoản</h3>
+        <p>Chúng tôi có quyền chỉnh sửa điều khoản dịch vụ khi cần thiết. Mọi thay đổi sẽ được công bố trên website trước khi áp dụng.</p>
+
+        <h3>9. Liên hệ</h3>
+        <p>Mọi thắc mắc liên quan đến điều khoản dịch vụ xin vui lòng liên hệ:</p>
+        <p>
+            <strong>Email:</strong> fruithgon@gmail.com<br>
+            <strong>Địa chỉ:</strong> 14 Nguyễn Văn Bảo, Gò Vấp, TP.HCM
+        </p>
+
+    </div>
+
+</div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="/script/cart_badge.js"></script>
+<script src="/script/cart.js"></script>
+</body>
+</html>
