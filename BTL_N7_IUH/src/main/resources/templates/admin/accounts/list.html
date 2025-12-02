@@ -26,7 +26,7 @@
                         <td th:text="${account.id}">1</td>
                         <td th:text="${account.accountDetail.fullName}">Nguyễn Văn A</td>
                         <td th:text="${account.username}">nguyenvana@example.com</td>
-                        <td th:text="${account.role.roleName}">ROLE_USER</td>
+                        <td th:text="${account.role.name}">ROLE_USER</td>
                         <td>
                                 <span th:class="${account.isEnabled ? 'badge bg-success' : 'badge bg-danger'}"
                                       th:text="${account.isEnabled ? 'Hoạt động' : 'Bị khóa'}">Hoạt động</span>
