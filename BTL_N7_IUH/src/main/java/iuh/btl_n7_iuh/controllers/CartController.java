@@ -11,9 +11,4 @@ public class CartController {
     public String cartPage(Model model) {
         return "cart";  // => templates/cart.html
     }
-
-    @GetMapping("/checkout")
-    public String checkoutPage(Model model) {
-        return "checkout"; // => templates/checkout.html
-    }
 }

@@ -182,15 +182,15 @@
                             <h5 class="mb-3 text-frubana">Thông tin người nhận</h5>
                             <div class="mb-3">
                                 <label class="form-label">Họ tên</label>
-                                <input type="text" class="form-control" placeholder="Nhập họ tên" th:value="${user?.fullName}" required>
+                                <input type="text" class="form-control" placeholder="Nhập họ tên" th:value="${user?.fullName}" id="receiverName" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Địa chỉ</label>
-                                <input type="text" class="form-control" placeholder="Nhập địa chỉ" th:value="${user?.address}" required>
+                                <input type="text" class="form-control" placeholder="Nhập địa chỉ" th:value="${user?.address}" id="receiverAddress" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Số điện thoại</label>
-                                <input type="text" class="form-control" placeholder="Nhập số điện thoại" th:value="${user?.phone}" required>
+                                <input type="text" class="form-control" placeholder="Nhập số điện thoại" th:value="${user?.phone}" id="receiverPhone" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Ghi chú</label>
@@ -348,6 +348,25 @@
     document.addEventListener("DOMContentLoaded", function () {
         updateCartBadge();
     });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const fields = ["receiverName", "receiverAddress", "receiverPhone"];
+
+        fields.forEach(id => {
+            const input = document.getElementById(id);
+            if (!input) return;
+
+            // Nếu localStorage có → gán vào input
+            const savedValue = localStorage.getItem(id);
+            if (savedValue) input.value = savedValue;
+
+            // Lưu lại mỗi khi người dùng nhập
+            input.addEventListener("input", () => {
+                localStorage.setItem(id, input.value);
+            });
+        });
+    });
+
 
 </script>
 

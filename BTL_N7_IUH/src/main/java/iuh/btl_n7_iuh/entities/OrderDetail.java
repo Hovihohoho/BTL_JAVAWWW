@@ -21,10 +21,11 @@ public class OrderDetail {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private Long productId;
+
+    private String productName;
+
+    private BigDecimal price;
 
     private Integer quantity;
-    private BigDecimal price;
 }

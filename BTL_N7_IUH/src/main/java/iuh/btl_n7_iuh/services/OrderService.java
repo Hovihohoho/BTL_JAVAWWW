@@ -56,22 +56,22 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        // Lưu chi tiết đơn hàng
+        // ⭐ SỬA Ở ĐÂY: dùng cartItems chứ KHÔNG dùng cart
         for (CartItem item : cartItems) {
-            Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
-
             OrderDetail detail = new OrderDetail();
             detail.setOrder(savedOrder);
-            detail.setProduct(product);
-            detail.setQuantity(item.getQuantity());
+
+            detail.setProductId(item.getProductId());
+            detail.setProductName(item.getProductName());
             detail.setPrice(BigDecimal.valueOf(item.getPrice()));
+            detail.setQuantity(item.getQuantity());
 
             orderDetailRepository.save(detail);
         }
 
         return savedOrder;
     }
+
 
     public List<Order> getOrdersByUsername(String username) {
         return orderRepository.findByAccountUsername(username);
