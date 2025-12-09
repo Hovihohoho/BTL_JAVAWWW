@@ -23,6 +23,8 @@ public class AuthController {
         return "login";
     }
 
+
+
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
         model.addAttribute("account", new Account()); // Cập nhật attribute
