@@ -5,76 +5,16 @@
         <h2 class="fw-bold mb-4 page-title">
             <i class="fas fa-users me-2"></i> DANH SÁCH TÀI KHOẢN
         </h2>
+        <!-- THÔNG BÁO -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-        <!-- CARD DANH SÁCH NGƯỜI DÙNG -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 fw-bold text-primary">Danh Sách Người Dùng</h6>
-                <a th:href="@{/admin/accounts/add}" class="btn btn-success btn-sm">
-                    <i class="fas fa-plus me-1"></i> Thêm mới
-                </a>
-            </div>
+        <!-- ========================== BẢNG TRÊN: DANH SÁCH NGƯỜI DÙNG =========================== -->
 
-            <div class="card-body">
-                <div class="table-responsive">
 
-                    <table class="table table-hover mb-0">
-                        <thead class="table-primary text-white">
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên người dùng</th>
-                            <th>Email</th>
-                            <th>Quyền hạn</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        <tr th:each="account : ${accounts}">
-                            <td th:text="${account.id}"></td>
-                            <td th:text="${account.accountDetail.fullName}"></td>
-                            <td th:text="${account.username}"></td>
-                            <td th:text="${account.role.name}"></td>
-
-                            <td>
-                                <span th:class="${account.isEnabled ? 'badge bg-success' : 'badge bg-danger'}"
-                                      th:text="${account.isEnabled ? 'Hoạt động' : 'Bị khóa'}"></span>
-                            </td>
-
-                            <td>
-                                <a th:href="@{'/admin/accounts/edit/' + ${account.id}}"
-                                   class="btn btn-sm btn-info me-2">
-                                    <i class="fas fa-edit"></i> Sửa
-                                </a>
-
-                                <form th:action="@{'/admin/accounts/delete/' + ${account.id}}" method="post"
-                                      class="d-inline"
-                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?');">
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash-alt"></i> Xóa
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-
-                        <tr th:if="${#lists.isEmpty(accounts)}">
-                            <td colspan="9" class="text-center text-muted fst-italic py-3">
-                                Không tìm thấy tài khoản nào.
-                            </td>
-                        </tr>
-
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- CARD QUẢN LÝ TÀI KHOẢN (LỌC ROLE + EDIT ROLE + LOCK/UNLOCK) -->
         <div class="card shadow">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 fw-bold text-primary">Quản lý Tài khoản</h6>
+                <h6 class="m-0 fw-bold text-primary">Danh Sách Người Dùng</h6>
             </div>
 
             <div class="card-body">
@@ -96,9 +36,6 @@
                             <th>Họ tên</th>
                             <th>SĐT</th>
                             <th>Địa chỉ</th>
-                            <th>Role</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
                         </tr>
                         </thead>
 
@@ -112,37 +49,64 @@
                             <td th:text="${acc.accountDetail != null ? acc.accountDetail.fullName : '—'}"></td>
                             <td th:text="${acc.accountDetail != null ? acc.accountDetail.phoneNumber : '—'}"></td>
                             <td th:text="${acc.accountDetail != null ? acc.accountDetail.address : '—'}"></td>
+                        </tr>
+                        </tbody>
 
-                            <!-- ROLE EDIT -->
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- =========================== BẢNG DƯỚI: QUẢN LÝ TÀI KHOẢN ============================== -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 fw-bold text-primary">Quản Lý Tài Khoản</h6>
+                <a th:href="@{/admin/accounts/add}" class="btn btn-success btn-sm">
+                    <i class="fas fa-plus me-1"></i> Thêm mới
+                </a>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <table class="table table-hover mb-0">
+                        <thead class="table-primary text-white">
+                        <tr>
+                            <th>ID</th>
+                            <th>Họ và tên</th>
+                            <th>Tên người dùng</th>
+                            <th>Quyền hạn</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="account : ${accounts}">
+                            <td th:text="${account.id}"></td>
+
+                            <!-- Họ và tên – chống null accountDetail -->
+                            <td th:text="${account.accountDetail != null ? account.accountDetail.fullName : '—'}"></td>
+
+                            <td th:text="${account.username}"></td>
+
+                            <!-- Quyền hạn – chống null role (phòng trường hợp account chưa có role) -->
+                            <td th:text="${account.role != null ? account.role.name : '—'}"></td>
+
                             <td>
-                                <form th:action="@{'/admin/accounts/update-role/' + ${acc.id}}" method="post"
-                                      class="d-flex justify-content-center">
-                                    <select name="roleId" class="form-select form-select-sm w-auto me-2">
-                                        <option th:each="r : ${roles}"
-                                                th:value="${r.id}"
-                                                th:selected="${acc.role != null and acc.role.id == r.id}"
-                                                th:text="${r.name}">
-                                        </option>
-                                    </select>
-                                    <button type="submit" class="btn btn-sm btn-primary">Lưu</button>
-                                </form>
+        <span th:class="${account.isEnabled ? 'badge bg-success' : 'badge bg-danger'}"
+              th:text="${account.isEnabled ? 'Hoạt động' : 'Bị khóa'}"></span>
                             </td>
 
-                            <!-- STATUS -->
                             <td>
-                                <form th:action="@{'/admin/accounts/' + ${acc.id} + '/status'}"
-                                      method="post" style="display:inline">
-                                    <input type="hidden" name="enabled" th:value="${!acc.isEnabled}"/>
-                                    <button type="submit"
-                                            th:text="${acc.isEnabled} ? 'Khóa' : 'Mở khóa'"
-                                            th:classappend="${acc.isEnabled} ? 'btn btn-warning' : 'btn btn-success'">
-                                    </button>
-                                </form>
-                            </td>
+                                <a th:href="@{'/admin/accounts/edit/' + ${account.id}}"
+                                   class="btn btn-sm btn-info me-2">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
 
-                            <!-- DELETE -->
-                            <td>
-                                <form th:action="@{'/admin/accounts/delete/' + ${acc.id}}" method="post"
+                                <form th:action="@{'/admin/accounts/delete/' + ${account.id}}" method="post"
+                                      style="display:inline"
                                       onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?');">
                                     <button type="submit" class="btn btn-sm btn-danger">
                                         <i class="fas fa-trash-alt"></i> Xóa
@@ -150,10 +114,16 @@
                                 </form>
                             </td>
                         </tr>
+
+                        <tr th:if="${#lists.isEmpty(accounts)}">
+                            <td colspan="9" class="text-center text-muted fst-italic py-3">
+                                Không tìm thấy tài khoản nào.
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
-                </div>
 
+                </div>
             </div>
         </div>
 
@@ -162,11 +132,14 @@
             document.addEventListener('DOMContentLoaded', function () {
                 const tabs = document.querySelectorAll('#roleTabs [data-role-filter]');
                 const rows = document.querySelectorAll('tbody tr[data-role]');
+
                 tabs.forEach(tab => {
                     tab.addEventListener('click', function () {
                         tabs.forEach(t => t.classList.remove('active'));
                         this.classList.add('active');
+
                         const role = this.getAttribute('data-role-filter');
+
                         rows.forEach(row => {
                             const rowRole = row.getAttribute('data-role');
                             const show = role === 'ALL' || rowRole === role;

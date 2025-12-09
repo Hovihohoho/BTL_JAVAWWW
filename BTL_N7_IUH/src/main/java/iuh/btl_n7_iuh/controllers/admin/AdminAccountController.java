@@ -17,42 +17,141 @@ public class AdminAccountController {
     private final AccountService accountService;
     private final RoleServices roleService;
 
-    // 📌 Hiển thị danh sách user
+    // ================== DANH SÁCH TÀI KHOẢN ==================
     @GetMapping
     public String listAccounts(Model model) {
-        model.addAttribute("accounts", accountService.findAll());     // trả về List<Account>
-        model.addAttribute("roles", roleService.findAll());           // để đổ vào combobox đổi role
+        model.addAttribute("accounts", accountService.findAll());     // List<Account>
+        model.addAttribute("roles", roleService.findAll());           // cho combobox role
         return "admin/accounts/list";
     }
 
-    // 📌 Xóa user
+    // ================== THÊM TÀI KHOẢN ==================
+
+    // Mở form thêm mới
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        // nếu chưa có attribute "account" (khi redirect lỗi) thì tạo mới
+        if (!model.containsAttribute("account")) {
+            model.addAttribute("account", new Account());
+        }
+        model.addAttribute("roles", roleService.findAll());
+        return "admin/accounts/add-edit";
+    }
+
+    // Submit form thêm mới
+    @PostMapping("/add")
+    public String handleAdd(
+            @ModelAttribute("account") Account account,
+            @RequestParam("roleId") Long roleId,
+            @RequestParam(value = "rawPassword", required = false) String rawPassword,
+            @RequestParam(value = "enabled", required = false) Boolean enabled,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            // nếu không gửi enabled thì default = true
+            if (enabled == null) {
+                enabled = Boolean.TRUE;
+            }
+            account.setIsEnabled(enabled);
+
+            accountService.createAccount(account, roleId, rawPassword);
+
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Thêm tài khoản mới thành công!");
+            return "redirect:/admin/accounts";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Không thể tạo tài khoản: " + ex.getMessage());
+            redirectAttributes.addFlashAttribute("account", account);
+            return "redirect:/admin/accounts/add";
+        }
+    }
+
+    // ================== SỬA TÀI KHOẢN ==================
+
+    // Mở form edit
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model,
+                               RedirectAttributes redirectAttributes) {
+
+        Account account = accountService.findById(id);
+        if (account == null) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Không tìm thấy tài khoản với ID = " + id);
+            return "redirect:/admin/accounts";
+        }
+
+        // Nếu trước đó redirect lỗi và đã có "account" thì không ghi đè
+        if (!model.containsAttribute("account")) {
+            model.addAttribute("account", account);
+        }
+        model.addAttribute("roles", roleService.findAll());
+
+        return "admin/accounts/add-edit";
+    }
+
+    // ================== SỬA TÀI KHOẢN ==================
+
+    // Submit form edit
+    @PostMapping("/edit/{id}")
+    public String handleEdit(
+            @PathVariable Long id,
+            @ModelAttribute("account") Account formAccount,
+            @RequestParam("roleId") Long roleId,
+            @RequestParam(value = "rawPassword", required = false) String rawPassword,
+            @RequestParam(value = "enabled", required = false) Boolean enabled,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            if (enabled != null) {
+                formAccount.setIsEnabled(enabled);
+            }
+
+            boolean ok = accountService.updateAccount(id, formAccount, roleId, rawPassword);
+
+            if (ok) {
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "Cập nhật tài khoản thành công!");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage",
+                        "Không tìm thấy tài khoản cần cập nhật!");
+            }
+            return "redirect:/admin/accounts";
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Không thể cập nhật tài khoản: " + ex.getMessage());
+            redirectAttributes.addFlashAttribute("account", formAccount);
+            return "redirect:/admin/accounts/edit/" + id;
+        }
+    }
+
+
+    // ================== XÓA TÀI KHOẢN ==================
     @PostMapping("/delete/{id}")
     public String deleteAccount(@PathVariable Long id,
                                 RedirectAttributes redirectAttributes) {
-
-        boolean deleted = accountService.deleteById(id);
-
-        if (deleted) {
-            redirectAttributes.addFlashAttribute(
-                    "successMessage", "Xóa tài khoản thành công!"
-            );
-        } else {
-            redirectAttributes.addFlashAttribute(
-                    "errorMessage",
-                    "Không thể xóa tài khoản vì đang có dữ liệu liên quan (đơn hàng, bình luận, v.v.)"
-            );
+        try {
+            accountService.deleteById(id);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Xoá tài khoản thành công!");
+        } catch (RuntimeException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
 
         return "redirect:/admin/accounts";
     }
 
-    // 📌 Cập nhật role cho user
+
+    // ================== CẬP NHẬT ROLE ==================
     @PostMapping("/update-role/{id}")
     public String updateRole(@PathVariable Long id,
                              @RequestParam("roleId") Long roleId,
                              RedirectAttributes redirectAttributes) {
 
-        boolean updated = accountService.updateRole(id, roleId); // tự hiện thực trong service
+        boolean updated = accountService.updateRole(id, roleId);
 
         if (updated) {
             redirectAttributes.addFlashAttribute("successMessage",
@@ -65,7 +164,7 @@ public class AdminAccountController {
         return "redirect:/admin/accounts";
     }
 
-    // ---- Cập nhật trạng thái theo tham số true/false ----
+    // ================== CẬP NHẬT TRẠNG THÁI ==================
     @PostMapping("/{id}/status")
     public String updateStatus(@PathVariable Long id,
                                @RequestParam("enabled") boolean enabled,
@@ -84,7 +183,7 @@ public class AdminAccountController {
         return "redirect:/admin/accounts";
     }
 
-    // ---- Toggle (không cần truyền tham số) ----
+    // Toggle nhanh (nếu còn dùng)
     @PostMapping("/{id}/toggle")
     public String toggle(@PathVariable Long id,
                          RedirectAttributes redirectAttributes) {
