@@ -1,4 +1,5 @@
 package iuh.btl_n7_iuh.services;
+
 import iuh.btl_n7_iuh.dto.CartItem;
 import iuh.btl_n7_iuh.entities.*;
 import iuh.btl_n7_iuh.repositories.*;
@@ -35,8 +36,8 @@ public class OrderService {
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản!"));
 
-        // Lấy trạng thái phù hợp
-        String statusName = paymentMethod.equalsIgnoreCase("COD") ? "Đang xử lý" : "Đã thanh toán";
+        // ✅ SỬA: Dùng "PENDING" để khớp với DataBTL2.sql
+        String statusName = paymentMethod.equalsIgnoreCase("COD") ? "PENDING" : "Đã thanh toán";
 
         OrderStatus status = orderStatusRepository.findByName(statusName)
                 .orElseGet(() -> {
@@ -56,13 +57,19 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        // ⭐ SỬA Ở ĐÂY: dùng cartItems chứ KHÔNG dùng cart
+        // ✅ ĐÃ SỬA: Tìm Product từ DB và gán vào OrderDetail (QUAN TRỌNG)
         for (CartItem item : cartItems) {
+            // 1. Tìm sản phẩm thực tế từ DB
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm ID: " + item.getProductId()));
+
             OrderDetail detail = new OrderDetail();
             detail.setOrder(savedOrder);
 
-            detail.setProductId(item.getProductId());
-            detail.setProductName(item.getProductName());
+            // 2. Gán object Product (Hibernate sẽ tự lấy ID để lưu vào cột product_id)
+            detail.setProduct(product);
+
+            // 3. Các thông tin khác
             detail.setPrice(BigDecimal.valueOf(item.getPrice()));
             detail.setQuantity(item.getQuantity());
 
@@ -72,19 +79,22 @@ public class OrderService {
         return savedOrder;
     }
 
-
     public List<Order> getOrdersByUsername(String username) {
         return orderRepository.findByAccountUsername(username);
     }
-    // Add this method inside OrderService class
 
+    // Các phương thức bổ sung
+    public Optional<Order> getOrderById(Long id) {
+        return orderRepository.findById(id);
+    }
 
-    public List<Order> getAllOrdersWithDetails() {
+    // Dùng cho Admin Controller (nếu có)
+    public List<Order> findAllWithDetails() {
         return orderRepository.findAllWithDetails();
     }
 
-    public Optional<Order> getOrderById(Long id) {
-        return orderRepository.findById(id);
+    public List<Order> findAll() {
+        return orderRepository.findAll();
     }
 
     public void updateOrderStatus(Long orderId, Long statusId) {
@@ -98,14 +108,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    // 👉 Lấy tất cả order kèm chi tiết
-    public List<Order> findAllWithDetails() {
-        return orderRepository.findAllWithDetails();
-    }
-
-    public void deleteById(Long id) { orderRepository.deleteById(id); }
-    // ✅ Hàm dùng cho ADMIN: lấy tất cả đơn hàng
-    public List<Order> findAll() {
-        return orderRepository.findAll();
+    public void deleteById(Long id) {
+        orderRepository.deleteById(id);
     }
 }

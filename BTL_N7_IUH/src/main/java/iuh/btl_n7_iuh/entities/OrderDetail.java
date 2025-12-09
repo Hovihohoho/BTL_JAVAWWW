@@ -2,7 +2,6 @@ package iuh.btl_n7_iuh.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 
 @Entity
@@ -21,11 +20,11 @@ public class OrderDetail {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private Long productId;
-
-    private String productName;
-
-    private BigDecimal price;
+    // ✅ QUAN TRỌNG: Phải khai báo là đối tượng Product để Repository có thể "join fetch"
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     private Integer quantity;
+    private BigDecimal price;
 }
