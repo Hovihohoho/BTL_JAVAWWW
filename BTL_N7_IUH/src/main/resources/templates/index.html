@@ -414,190 +414,53 @@
     </div>
 </div>
 
-<footer class="text-center py-4 mt-5">
-    <p class="mb-1">&copy; 2025 Frubana - Tươi ngon mỗi ngày.</p>
-    <small>Made with <i class="fa fa-heart text-warning"></i> by Team IUH</small>
+<!-- Footer -->
+<footer class="py-4 mt-5">
+    <div class="container text-center">
+        <h5 class="fw-bold mb-3">Frubana</h5>
+        <p class="mb-1">Cung cấp rau củ quả hữu cơ, tươi ngon mỗi ngày.</p>
+        <p class="small mb-0">© 2025 Frubana. All rights reserved.</p>
+    </div>
 </footer>
 
 <div class="ai-chat-widget">
+    <button id="chatToggle" class="ai-chat-btn" >
+        <i class="fa-solid fa-comments"></i>
+        <span class="ai-notification" id="chatNotify" style="display:none;"></span>
+    </button>
+
     <div class="ai-chat-window" id="chatWindow">
         <div class="chat-header">
             <div class="d-flex align-items-center">
                 <i class="fas fa-robot fs-4 me-2"></i>
-                <div>
-                    <h6 class="mb-0">Frubana AI</h6>
-                    <small style="font-size: 0.75rem; opacity: 0.9;">Sẵn sàng hỗ trợ</small>
-                </div>
+                <h6 class="mb-0">Frubana AI</h6>
             </div>
-            <i class="fas fa-times close-chat" onclick="toggleChat()"></i>
+            <i class="fa-solid fa-xmark close-chat" id="closeChat"></i>
         </div>
 
         <div class="chat-body" id="chatBody">
             <div class="message bot">
-                Xin chào! 👋 Tôi là trợ lý ảo của Frubana. Bạn cần tìm rau củ hay muốn tôi gợi ý món ngon hôm nay?
+                Xin chào! 👋 Tôi là trợ lý ảo AI. Bạn cần tìm sản phẩm gì không?
+            </div>
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                Frubana AI đang trả lời...
             </div>
         </div>
 
-        <div class="typing-indicator" id="typingIndicator">Frubana AI đang nhập...</div>
-
         <div class="chat-footer">
-            <input type="text" class="chat-input" id="chatInput" placeholder="Nhập câu hỏi của bạn..." onkeypress="handleKeyPress(event)">
-            <button class="chat-send" onclick="sendMessage()">
-                <i class="fas fa-paper-plane"></i>
+            <input type="text" id="chatInput" class="chat-input"
+                   placeholder="Nhập câu hỏi..." onkeypress="handleKeyPress(event)">
+
+            <button id="sendBtn" class="chat-send" onclick="sendMessage()">
+                <i class="fa-solid fa-paper-plane"></i>
             </button>
         </div>
     </div>
-
-    <button class="ai-chat-btn" onclick="toggleChat()">
-        <i class="fas fa-comment-dots"></i>
-        <span class="ai-notification"></span>
-    </button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/script/cart_badge.js"></script>
 <script src="/script/cart.js"></script>
-
-<script>
-    function toggleChat() {
-        const chatWindow = document.getElementById('chatWindow');
-        chatWindow.classList.toggle('active');
-        // Ẩn thông báo đỏ khi mở
-        if (chatWindow.classList.contains('active')) {
-            document.querySelector('.ai-notification').style.display = 'none';
-            document.getElementById('chatInput').focus();
-        }
-    }
-
-    function handleKeyPress(e) {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    }
-
-    function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const message = input.value.trim();
-        if (message === '') return;
-
-        // 1. Hiển thị tin nhắn người dùng
-        addMessage(message, 'user');
-        input.value = '';
-
-        // 2. Giả lập AI đang suy nghĩ
-        const typing = document.getElementById('typingIndicator');
-        typing.style.display = 'block';
-
-        // Tự động cuộn xuống cuối
-        scrollToBottom();
-
-        // 3. Phản hồi sau 1-1.5s
-        setTimeout(() => {
-            typing.style.display = 'none';
-            const botResponse = getAIResponse(message);
-            addMessage(botResponse, 'bot');
-        }, 1200);
-    }
-
-    function addMessage(text, sender) {
-        const chatBody = document.getElementById('chatBody');
-        const div = document.createElement('div');
-        div.classList.add('message', sender);
-        div.innerText = text;
-        chatBody.appendChild(div);
-        scrollToBottom();
-    }
-
-    function scrollToBottom() {
-        const chatBody = document.getElementById('chatBody');
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    // ================== KỊCH BẢN AI CHUYÊN SÂU (Advanced Rule-Based) ==================
-    function getAIResponse(input) {
-        const text = input.toLowerCase().trim();
-
-        // --- 1. NHÓM CHÀO HỎI & GIAO TIẾP ---
-        if (text.includes('xin chào') || text.includes('chào') || text.includes('hi') || text.includes('hello')) {
-            return "Chào bạn! 👋 Chào mừng đến với Frubana. Tôi có thể giúp bạn tìm trái cây nhập khẩu 🍎, rau củ hữu cơ 🥦 hay thịt tươi 🥩 hôm nay?";
-        }
-        if (text.includes('cảm ơn') || text.includes('thank')) {
-            return "Không có chi! Rất vui được hỗ trợ bạn. Đừng quên đánh giá 5 sao cho shop nhé! ⭐";
-        }
-        if (text.includes('tạm biệt') || text.includes('bye')) {
-            return "Tạm biệt! Frubana luôn mở cửa chờ bạn quay lại. 👋";
-        }
-
-        // --- 2. NHÓM SẢN PHẨM & TƯ VẤN CỤ THỂ ---
-        // Trái cây
-        if (text.includes('dâu') || text.includes('strawberry')) {
-            return "🍓 Dâu tây Đà Lạt tại Frubana là hàng hái trong ngày, cuống xanh, trái cứng. Giá 65k/hộp 500g. Làm sinh tố hay ăn tươi đều tuyệt!";
-        }
-        if (text.includes('nho')) {
-            return "🍇 Nho đen Mỹ không hạt, vỏ mỏng, ngọt đậm. Shop đang có chương trình mua 2kg tặng 1 gói muối ô mai đấy ạ.";
-        }
-        if (text.includes('táo') || text.includes('apple')) {
-            return "🍎 Chúng tôi có Táo Envy Mỹ và Táo Rockit New Zealand. Táo giòn, ngọt, rất thơm. Bạn muốn mua size lớn hay nhỏ?";
-        }
-        if (text.includes('cam') || text.includes('quýt')) {
-            return "🍊 Cam vàng Ai Cập và Quýt Úc đang vào mùa. Mọng nước, giàu Vitamin C, tăng sức đề kháng cực tốt.";
-        }
-        // Rau củ & Thịt
-        if (text.includes('rau') || text.includes('củ')) {
-            return "🥦 Rau tại Frubana là rau hữu cơ chuẩn VietGAP. Sáng nay mới về cải kale, súp lơ baby và cà chua bi. Bạn xem ở mục 'Rau củ quả' nhé.";
-        }
-        if (text.includes('thịt') || text.includes('bò') || text.includes('heo')) {
-            return "🥩 Thịt bò thăn nội và Ba chỉ heo của shop được bảo quản lạnh tiêu chuẩn, đảm bảo độ tươi ngon nhất khi đến tay bạn.";
-        }
-
-        // --- 3. NHÓM GIỎ QUÀ TẶNG (MỚI) ---
-        if (text.includes('quà') || text.includes('biếu') || text.includes('tặng') || text.includes('giỏ trái cây')) {
-            return "🎁 Frubana chuyên thiết kế giỏ trái cây biếu tặng sang trọng (Sinh nhật, Khai trương, Thăm hỏi). Giá từ 500k - 2 triệu. Bạn cần tư vấn mẫu nào không?";
-        }
-
-        // --- 4. NHÓM NGUỒN GỐC & XUẤT XỨ (MỚI) ---
-        if (text.includes('xuất xứ') || text.includes('ở đâu') || text.includes('trung quốc')) {
-            return "🌍 Shop cam kết minh bạch nguồn gốc: Trái cây nhập khẩu (Mỹ, Úc, New Zealand) có tem truy xuất. Rau củ từ các nông trại Đà Lạt uy tín. Nói KHÔNG với hàng trôi nổi.";
-        }
-
-        // --- 5. NHÓM BẢO QUẢN & SỬ DỤNG (MỚI) ---
-        if (text.includes('bảo quản') || text.includes('giữ tươi') || text.includes('để được lâu')) {
-            return "❄️ Mẹo nhỏ: Trái cây nên bọc giấy báo hoặc màng bọc thực phẩm rồi để ngăn mát tủ lạnh. Không rửa trước khi cất để tránh bị úng nước bạn nhé.";
-        }
-        if (text.includes('ăn thế nào') || text.includes('chế biến')) {
-            return "👨‍🍳 Sản phẩm này ăn tươi, làm salad, ép nước hoặc làm mứt đều ngon. Bạn có thể ghé mục Blog của Frubana để xem công thức chi tiết ạ.";
-        }
-
-        // --- 6. NHÓM VẬN CHUYỂN & PHÍ SHIP ---
-        if (text.includes('ship') || text.includes('vận chuyển') || text.includes('giao hàng')) {
-            return "🚚 Phí ship nội thành đồng giá 15k. FREESHIP đơn > 300k. Giao hỏa tốc 2h để đảm bảo độ tươi ngon nhất.";
-        }
-        if (text.includes('tỉnh') || text.includes('xa')) {
-            return "📦 Với đơn tỉnh, shop đóng thùng xốp kèm đá gel bảo quản. Thời gian nhận 1-2 ngày. Phí ship sẽ báo cụ thể khi chốt đơn ạ.";
-        }
-
-        // --- 7. NHÓM MUA SỈ & HỢP TÁC (MỚI) ---
-        if (text.includes('sỉ') || text.includes('buôn') || text.includes('nhà hàng') || text.includes('số lượng lớn')) {
-            return "🤝 Frubana có chính sách giá tốt cho nhà hàng/quán cafe lấy sỉ. Vui lòng để lại SĐT hoặc liên hệ Zalo 0379255680 để nhận báo giá B2B nhé.";
-        }
-
-        // --- 8. NHÓM THANH TOÁN & ĐỔI TRẢ ---
-        if (text.includes('thanh toán') || text.includes('chuyển khoản')) {
-            return "💳 Bạn có thể thanh toán COD (tiền mặt) hoặc chuyển khoản qua QR Code VNPAY/MoMo tiện lợi tại bước thanh toán.";
-        }
-        if (text.includes('hỏng') || text.includes('đổi trả') || text.includes('khiếu nại')) {
-            return "🛡️ Chính sách bảo hành: 1 đổi 1 trong vòng 24h nếu sản phẩm bị dập nát hoặc không đúng chất lượng. Bạn chụp ảnh gửi lại shop ngay nhé!";
-        }
-
-        // --- 9. NHÓM HỖ TRỢ TÀI KHOẢN ---
-        if (text.includes('quên mật khẩu') || text.includes('đăng nhập')) {
-            return "🔐 Bạn nhấn vào 'Đăng nhập' > chọn 'Quên mật khẩu' để lấy lại password qua email nhé. Nếu không được, hãy chat với admin tại đây.";
-        }
-
-        // --- MẶC ĐỊNH ---
-        return "Xin lỗi, tôi chưa hiểu rõ ý bạn lắm 🤔. Bạn có thể hỏi về 'giá dâu tây', 'phí ship', 'giỏ quà tặng' hoặc 'chính sách đổi trả' được không?";
-    }
-</script>
+<script src="/script/chatbot.js"></script>
 
 </body>
 </html>

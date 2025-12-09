@@ -1,0 +1,52 @@
+<div th:fragment="widget">
+    <style>
+        .ai-chat-widget { position: fixed; bottom: 30px; right: 30px; z-index: 1000; font-family: "Segoe UI", sans-serif; }
+        .ai-chat-btn { width: 60px; height: 60px; background: linear-gradient(135deg, #6d9c3a, #4caf50); border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: none; color: white; font-size: 28px; cursor: pointer; transition: transform 0.3s; display: flex; align-items: center; justify-content: center; }
+        .ai-chat-btn:hover { transform: scale(1.1); }
+        .ai-notification { position: absolute; top: 0; right: 0; width: 15px; height: 15px; background-color: red; border-radius: 50%; border: 2px solid white; }
+        .ai-chat-window { position: absolute; bottom: 80px; right: 0; width: 350px; height: 480px; background: #fff; border-radius: 20px; box-shadow: 0 5px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden; opacity: 0; transform: translateY(20px) scale(0.95); visibility: hidden; transition: all 0.3s ease; border: 1px solid #e0e0e0; }
+        .ai-chat-window.active { opacity: 1; transform: translateY(0) scale(1); visibility: visible; }
+        .chat-header { background: #6d9c3a; color: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .chat-body { flex: 1; padding: 15px; background-color: #f9f9f9; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
+        .message.bot { background-color: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .message.user { background-color: #6d9c3a; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-footer { padding: 10px; background: white; border-top: 1px solid #eee; display: flex; gap: 10px; }
+        .chat-input { flex: 1; border: 1px solid #ddd; border-radius: 20px; padding: 8px 15px; outline: none; }
+        .chat-send { background: #6d9c3a; color: white; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .typing-indicator { font-size: 0.75rem; color: #888; margin-left: 10px; display: none; }
+    </style>
+
+    <div class="ai-chat-widget">
+        <button id="chatToggle" class="ai-chat-btn">
+            <i class="fa-solid fa-comments"></i>
+            <span class="ai-notification" id="chatNotify" style="display:none;"></span>
+        </button>
+
+        <div class="ai-chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-robot fs-4 me-2"></i>
+                    <h6 class="mb-0">Frubana AI</h6>
+                </div>
+                <i class="fa-solid fa-xmark close-chat" id="closeChat" style="cursor: pointer;"></i>
+            </div>
+
+            <div class="chat-body" id="chatBody">
+                <div class="message bot">
+                    Xin chào! 👋 Tôi là trợ lý ảo AI. Bạn cần tìm sản phẩm gì không?
+                </div>
+                <div class="typing-indicator" id="typingIndicator">
+                    Frubana AI đang trả lời...
+                </div>
+            </div>
+
+            <div class="chat-footer">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Nhập câu hỏi...">
+                <button id="sendBtn" class="chat-send">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
