@@ -289,7 +289,7 @@
                 <button class="btn p-2" type="button" title="Tìm kiếm"><i class="fas fa-search text-dark"></i></button>
                 <a th:href="@{/cart}" class="btn position-relative me-3" title="Giỏ hàng">
                     <i class="fa fa-shopping-bag text-frubana fs-5"></i>
-                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
+                    <span class="badge bg-danger rounded-pill cart-badge position-absolute top-0 start-100 translate-middle"
                           th:text="${totalQuantity != null ? totalQuantity : 0}">0</span>
                 </a>
 
@@ -380,7 +380,7 @@
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="/script/cart_badge.js"></script>
+<script src="/script/cart.js"></script>
 <script>
     const swiper = new Swiper('#testimonialSwiper', {
         slidesPerView: 3,

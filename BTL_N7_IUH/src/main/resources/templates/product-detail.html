@@ -12,6 +12,7 @@
         :root {
             --frubana-green: #6d9c3a;
             --frubana-dark-green: #5b8731;
+            --frubana-yellow: #f8c057;
             --bg-light: #f4f7f6;
         }
 
@@ -21,13 +22,7 @@
             padding-top: 70px;
         }
 
-        /* Navbar Custom */
-        .custom-navbar {
-            background-color: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
+        /* --- STYLES ĐỒNG BỘ --- */
         .text-frubana { color: var(--frubana-green) !important; }
         .bg-frubana { background-color: var(--frubana-green) !important; }
         .btn-frubana {
@@ -42,7 +37,14 @@
             transform: translateY(-2px);
         }
 
-        /* Breadcrumb Banner */
+        /* Navbar Custom */
+        .custom-navbar {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Banner Style */
         .page-header {
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('/images/banner1.jpg');
             background-attachment: fixed;
@@ -57,7 +59,7 @@
             margin-top: -20px;
         }
 
-        /* Product Detail Styles */
+        /* Product Detail Style */
         .product-image-container {
             background: white;
             padding: 1rem;
@@ -87,13 +89,6 @@
             color: #dc3545;
         }
 
-        .old-price {
-            text-decoration: line-through;
-            color: #999;
-            font-size: 1.2rem;
-            margin-left: 10px;
-        }
-
         .quantity-control {
             display: flex;
             align-items: center;
@@ -110,7 +105,9 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: 0.2s;
         }
+        .btn-qty:hover { background: #e9ecef; }
 
         .qty-input {
             width: 50px;
@@ -120,6 +117,7 @@
             border-right: none;
             text-align: center;
             font-weight: bold;
+            outline: none;
         }
 
         .policy-box {
@@ -133,11 +131,6 @@
             align-items: center;
             margin-bottom: 10px;
             color: #555;
-        }
-        .policy-item i {
-            color: var(--frubana-green);
-            width: 30px;
-            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -153,10 +146,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto fw-semibold">
-                <li class="nav-item"><a class="nav-link text-dark" th:href="@{/}">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link text-dark hover-green" th:href="@{/}">Trang chủ</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-frubana active" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
-                    <ul class="dropdown-menu border-0 shadow-sm">
+                    <ul class="dropdown-menu border-0 shadow-sm fade-down">
                         <li><a class="dropdown-item" th:href="@{/products/vegetable}">Rau củ quả</a></li>
                         <li><a class="dropdown-item" th:href="@{/products/fruit}">Trái cây</a></li>
                         <li><a class="dropdown-item" th:href="@{/products/meat}">Thịt tươi</a></li>
@@ -173,6 +166,7 @@
                     <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
                           th:text="${totalQuantity != null ? totalQuantity : 0}">0</span>
                 </a>
+
                 <div class="dropdown" sec:authorize="isAuthenticated()">
                     <button class="btn dropdown-toggle text-dark fw-semibold" id="userMenu" data-bs-toggle="dropdown">
                         <i class="fa fa-user-circle me-1"></i>
@@ -229,13 +223,13 @@
                 </div>
 
                 <div class="mb-4">
-                        <span class="price-tag"
-                              th:text="${#numbers.formatDecimal((product.salePrice != null ? product.salePrice : product.price), 0, 'COMMA', 0, 'POINT')} + ' đ'">
-                        </span>
-                    <span class="old-price"
+                    <span class="price-tag"
+                          th:text="${#numbers.formatDecimal((product.salePrice != null ? product.salePrice : product.price), 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                    </span>
+                    <span class="text-decoration-line-through text-muted ms-2 fs-5"
                           th:if="${product.salePrice != null}"
                           th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
-                        </span>
+                    </span>
                 </div>
 
                 <p class="text-muted mb-4" th:text="${product.description}" style="line-height: 1.8;">
@@ -249,15 +243,23 @@
                         <button type="button" class="btn-qty" onclick="increaseQty()">+</button>
                     </div>
 
-                    <button type="button" class="btn btn-frubana btn-lg px-4 flex-grow-1 add-to-cart-btn-detail">
+                    <button type="button"
+                            class="btn btn-frubana btn-lg px-4 flex-grow-1 add-to-cart-btn-detail"
+                            th:attr="
+                                        data-id=${product.id},
+                                        data-name=${product.name},
+                                        data-price=${product.salePrice != null ? product.salePrice : product.price},
+                                        data-image=${product.imageUrl}
+                                    ">
                         <i class="fas fa-cart-plus me-2"></i> Thêm vào giỏ hàng
                     </button>
+
                 </div>
 
                 <div class="policy-box">
-                    <div class="policy-item"><i class="fas fa-shipping-fast"></i> Giao hàng trong 2 giờ tại nội thành</div>
-                    <div class="policy-item"><i class="fas fa-sync-alt"></i> Đổi trả trong 24h nếu hư hỏng</div>
-                    <div class="policy-item"><i class="fas fa-leaf"></i> Cam kết 100% thực phẩm sạch</div>
+                    <div class="policy-item"><i class="fas fa-shipping-fast me-2"></i> Giao hàng trong 2 giờ tại nội thành</div>
+                    <div class="policy-item"><i class="fas fa-sync-alt me-2"></i> Đổi trả trong 24h nếu hư hỏng</div>
+                    <div class="policy-item"><i class="fas fa-leaf me-2"></i> Cam kết 100% thực phẩm sạch</div>
                 </div>
             </div>
         </div>
@@ -276,55 +278,8 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/script/cart_badge.js"></script>
+
 <script src="/script/cart.js"></script>
 
-<script th:inline="javascript">
-    /* Logic tăng giảm số lượng */
-    function increaseQty() {
-        let qty = document.getElementById('qtyInput');
-        qty.value = parseInt(qty.value) + 1;
-    }
-    function decreaseQty() {
-        let qty = document.getElementById('qtyInput');
-        if (qty.value > 1) qty.value = parseInt(qty.value) - 1;
-    }
-
-    /* Logic thêm vào giỏ hàng từ trang chi tiết (cần hỗ trợ số lượng) */
-    document.addEventListener("DOMContentLoaded", function() {
-        const addBtn = document.querySelector('.add-to-cart-btn-detail');
-        if(addBtn) {
-            addBtn.addEventListener('click', function() {
-                const quantity = parseInt(document.getElementById('qtyInput').value);
-
-                // Lấy thông tin từ Thymeleaf variables
-                const product = {
-                    id: [[${product.id}]],
-                    name: "[[${product.name}]]",
-                    price: [[${product.salePrice != null ? product.salePrice : product.price}]],
-                    image: "[[${product.imageUrl}]]",
-                    quantity: quantity // Ghi đè số lượng mặc định 1
-                };
-
-                addToCart(product); // Hàm này nằm trong cart.js, cần sửa nhẹ để nhận quantity
-            });
-        }
-    });
-
-    // Ghi đè hàm addToCart để xử lý số lượng từ input (nếu cart.js chưa hỗ trợ)
-    // Nếu cart.js của bạn chỉ tăng 1, đoạn này sẽ giúp cập nhật đúng số lượng
-    function addToCart(product) {
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let found = cart.find(item => item.id == product.id);
-        if (found) {
-            found.quantity += product.quantity; // Cộng dồn số lượng
-        } else {
-            cart.push(product);
-        }
-        localStorage.setItem('cart', JSON.stringify(cart));
-        alert('✅ Đã thêm ' + product.quantity + ' sản phẩm vào giỏ hàng!');
-        if (typeof updateCartBadge === 'function') updateCartBadge();
-    }
-</script>
 </body>
 </html>

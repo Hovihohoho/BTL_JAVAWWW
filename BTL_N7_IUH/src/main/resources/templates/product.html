@@ -1,170 +1,316 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <title>Frubana - Rau củ quả hữu cơ</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sản phẩm | Frubana</title>
 
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <!-- Swiper -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 
     <style>
         :root {
-            --frubana-green: #6d9c3a;
-            --frubana-dark-green: #5b8731;
-            --bg-light: #f4f7f6;
+            --frubana-green:#6d9c3a;
+            --frubana-dark-green:#5cb85c;
+            --frubana-yellow:#f8c057;
+        }
+        .text-frubana{color:var(--frubana-green);}
+        .bg-frubana{background-color:var(--frubana-dark-green)!important;}
+        .btn-frubana{background-color:var(--frubana-green);color:#fff;border:none;}
+        .btn-frubana:hover{background-color:#5b8731;color:#fff;}
+
+        /* Hero */
+        .hero {
+            background:url('https://bloganchoi.com/wp-content/uploads/2018/06/cac-loai-trai-cay.jpg')
+            center/cover no-repeat;
+            min-height:260px;
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.35);
         }
 
-        body {
-            font-family: "Segoe UI", sans-serif;
-            background-color: var(--bg-light);
-            padding-top: 70px;
+        /* Testimonial */
+        .testimonial-card {
+            border:1px solid #eee;border-radius:16px;padding:24px;height:100%;
+            box-shadow:0 8px 20px rgba(0,0,0,.04);
+            transition:transform .2s ease, box-shadow .2s ease;
+            background:#fff;
         }
+        .testimonial-card:hover {
+            transform:translateY(-4px);
+            box-shadow:0 14px 28px rgba(0,0,0,.08);
+        }
+        .avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#f6f6f6;}
+        .quote{font-size:1.05rem;line-height:1.7;}
+        .rating i{margin-right:2px;}
+        .swiper {padding: 16px 8px 48px;}
+        .swiper-slide {height: auto;}
+        .swiper-pagination-bullet-active {background: var(--frubana-green);}
 
-        /* Navbar & Colors */
-        .text-frubana { color: var(--frubana-green) !important; }
-        .bg-frubana { background-color: var(--frubana-green) !important; }
-        .btn-frubana {
-            background-color: var(--frubana-green);
-            color: white;
-            border: none;
-            transition: all 0.3s;
-        }
-        .btn-frubana:hover {
-            background-color: var(--frubana-dark-green);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Navbar Custom */
-        .custom-navbar {
-            background-color: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        /* Banner Parallax */
-        .page-header {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)), url('/images/banner2.jpg'); /* Đổi ảnh khác cho khác trang chủ */
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center;
-            height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            margin-bottom: 2rem;
-            margin-top: -20px;
-        }
-
-        .header-content h1 {
-            font-weight: 800;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            letter-spacing: 1px;
-        }
-
-        /* Product Card Styling */
-        .product-card {
-            border: none;
-            border-radius: 12px;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            overflow: hidden;
-            height: 100%;
-        }
-
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-
-        .product-card img {
-            height: 220px;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .product-card:hover img {
-            transform: scale(1.05);
-        }
-
-        /* Search Box */
-        .search-box {
+        /* Cho phép nút trồi ra ngoài và định vị theo container Swiper */
+        #testimonialSwiper {
             position: relative;
-            max-width: 500px;
-            margin: 0 auto;
+            overflow: visible !important;
         }
-        .search-box input {
-            padding-right: 50px;
-            border-radius: 30px;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+        /* Kích thước + tạo nút tròn viền xanh */
+        #testimonialSwiper .swiper-button-next,
+        #testimonialSwiper .swiper-button-prev {
+            --swiper-navigation-size: 18px;   /* kích thước icon mũi tên */
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            border: 2px solid var(--frubana-green);
+            background: #fff;
+            color: var(--frubana-green);
+            box-shadow: 0 6px 16px rgba(0,0,0,.08);
+            transition: all .2s ease;
+            top: -22px;              /* đẩy lên trên vùng slide */
+            transform: none;         /* bỏ translateY của mặc định */
+            z-index: 10;
         }
-        .search-box button {
-            position: absolute;
-            right: 5px;
-            top: 5px;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            padding: 0;
-            display: flex;
+
+        /* Đặt vị trí hai nút ở góc phải trên */
+        #testimonialSwiper .swiper-button-next { right: 0;   left: auto; }
+        #testimonialSwiper .swiper-button-prev { right: 52px; left: auto; }
+
+        /* Hover: tô nền xanh, icon trắng */
+        #testimonialSwiper .swiper-button-next:hover,
+        #testimonialSwiper .swiper-button-prev:hover {
+            background: var(--frubana-green);
+            color: #fff;
+            transform: scale(1.06);
+        }
+
+        /* Mobile: thu nhỏ và hạ xuống 1 chút nếu cần */
+        @media (max-width: 576px) {
+            #testimonialSwiper .swiper-button-next,
+            #testimonialSwiper .swiper-button-prev {
+                width: 34px; height: 34px;
+                top: -18px;
+            }
+            #testimonialSwiper .swiper-button-prev { right: 44px; }
+        }
+
+        /* Giữ chấm phân trang lệch xuống chút cho đỡ đụng nút */
+        #testimonialSwiper .swiper-pagination {
+            margin-top: 8px;
+        }
+
+        /* Cho phép hiệu ứng trồi ra ngoài */
+        #testimonialSwiper { overflow: visible !important; }
+
+        /* Mặc định: các slide hơi nhỏ và mờ nhẹ */
+        #testimonialSwiper .swiper-slide .testimonial-card{
+            transform: scale(.96);
+            transition: transform .35s ease, box-shadow .35s ease, filter .35s ease;
+            filter: saturate(.95) brightness(.98);
+            transform-origin: center center;
+        }
+
+        /* Slide đang active: phóng to + đổ bóng rõ hơn */
+        #testimonialSwiper .swiper-slide-active .testimonial-card{
+            transform: scale(1.03);
+            box-shadow: 0 14px 32px rgba(0,0,0,.12);
+            filter: none;
+        }
+
+        /* Hiệu ứng pop ngắn khi vừa chuyển tới slide mới */
+        @keyframes popIn {
+            0%   { transform: scale(.95); }
+            60%  { transform: scale(1.07); }
+            100% { transform: scale(1.03); }
+        }
+        #testimonialSwiper .testimonial-card.pop {
+            animation: popIn .38s ease both;
+        }
+
+        /* Cho phép overflow để thấy phần phóng to */
+        #testimonialSwiper {
+            overflow: visible !important;
+        }
+
+        /* Mặc định các card nhỏ hơn một chút */
+        #testimonialSwiper .testimonial-card {
+            transform: scale(0.92);
+            opacity: 0.6;
+            transition: all 0.4s ease;
+        }
+
+        /* Slide đang ở giữa khung hình (center) sẽ phóng to và rõ nét */
+        #testimonialSwiper .swiper-slide-active .testimonial-card {
+            transform: scale(1.1);
+            opacity: 1;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+            z-index: 5;
+        }
+
+        /* Cho phép overflow để không bị cắt hiệu ứng */
+        #testimonialSwiper {
+            overflow: visible !important;
+        }
+
+        /* Các slide mặc định nhỏ và mờ hơn */
+        #testimonialSwiper .testimonial-card {
+            transform: scale(0.85);
+            opacity: 0.45;
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            filter: blur(0.3px) brightness(0.95);
+            transform-origin: center center;
+        }
+
+        /* Slide trung tâm: phóng to rõ rệt, sáng và đổ bóng nổi */
+        #testimonialSwiper .swiper-slide-active .testimonial-card {
+            transform: scale(1.25);
+            opacity: 1;
+            filter: none;
+            z-index: 5;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes popCenter {
+            0%   { transform: scale(1.05); }
+            60%  { transform: scale(1.28); }
+            100% { transform: scale(1.25); }
+        }
+        #testimonialSwiper .swiper-slide-active .testimonial-card {
+            animation: popCenter 0.45s ease-out;
+        }
+
+        /* === TUNING NHANH === */
+        #testimonialSwiper {
+            --center-scale: 1.1;   /* Độ phóng to slide giữa */
+            --side-scale:   0.82;   /* Độ thu nhỏ slide hai bên */
+            --easing: cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            overflow: visible !important;  /* không cắt hiệu ứng */
+        }
+
+        /* Slide/card: mặc định thu nhỏ + mờ nhẹ để tạo chiều sâu */
+        #testimonialSwiper .testimonial-card{
+            transform: scale(var(--side-scale));
+            opacity: 0.5;
+            filter: saturate(.95) brightness(.98);
+            transition: transform .5s var(--easing),
+            opacity .5s var(--easing),
+            filter .5s var(--easing),
+            box-shadow .5s var(--easing);
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        /* Slide giữa (active) – phóng to mạnh, sáng, đổ bóng rõ */
+        #testimonialSwiper .swiper-slide-active .testimonial-card{
+            transform: scale(var(--center-scale));
+            opacity: 1;
+            filter: none;
+            box-shadow: 0 22px 50px rgba(0,0,0,.16);
+            z-index: 5;
+        }
+
+        /* Optional: “pop” nhẹ khi chuyển đến giữa */
+        @keyframes popCenter {
+            0%   { transform: scale(calc(var(--center-scale) - 0.08)); }
+            60%  { transform: scale(calc(var(--center-scale) + 0.03)); }
+            100% { transform: scale(var(--center-scale)); }
+        }
+        #testimonialSwiper .swiper-slide-active .testimonial-card{
+            animation: popCenter .45s ease-out;
+        }
+
+        /* Đảm bảo wrapper không bó chiều cao khiến cảm giác “nhảy” */
+        #testimonialSwiper .swiper-wrapper{
             align-items: center;
-            justify-content: center;
         }
+        #testimonialSwiper .swiper-slide{
+            height: auto;            /* để card cao bao nhiêu thì slide theo bấy nhiêu */
+            display: flex;           /* giúp card luôn căn giữa theo trục dọc */
+            align-items: stretch;
+        }
+
+
+
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-navbar">
-    <div class="container py-2">
-        <a class="navbar-brand fs-3 fw-bold text-frubana" th:href="@{/}">
-            <i class="fa-solid fa-leaf me-1"></i> Frubana
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+<!-- Top bar -->
+<div class="top-bar py-2 bg-frubana text-white" style="font-size:.8rem;">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="contact-info d-none d-md-block">
+            <span class="me-3"><i class="fas fa-map-marker-alt"></i> Địa Chỉ: 14 Nguyễn Văn Bảo, phường Hanh Thông, TP.HCM</span>
+            <span><i class="fas fa-envelope"></i> Email: fruitngon@gmail.com</span>
+        </div>
+        <div>
+            <a th:href="@{/privary}" class="text-white text-decoration-none me-3">Chính sách bảo mật</a>
+            <a th:href="@{/term_of_service}" class="text-white text-decoration-none">Điều khoản dịch vụ</a>
+        </div>
+    </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fs-2 fw-bold text-frubana" th:href="@{/}">Frubana</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto fw-semibold">
-                <li class="nav-item"><a class="nav-link text-dark" th:href="@{/}">Trang chủ</a></li>
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold">
+                <li class="nav-item">
+                    <a class="nav-link text-frubana active" th:href="@{/}">Trang chủ</a>
+                </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-frubana active" href="#" data-bs-toggle="dropdown">Sản phẩm</a>
-                    <ul class="dropdown-menu border-0 shadow-sm">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">Sản phẩm</a>
+                    <ul class="dropdown-menu border-0 shadow-sm" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" th:href="@{/products/vegetable}">Rau củ quả</a></li>
                         <li><a class="dropdown-item" th:href="@{/products/fruit}">Trái cây</a></li>
-                        <li><a class="dropdown-item" th:href="@{/products/meat}">Thịt tươi</a></li>
-                        <li><hr class="dropdown-divider" /></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" th:href="@{/products/all}">Xem tất cả</a></li>
                     </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link text-dark" th:href="@{/testimonials}">Lời chứng thực</a></li>
                 <li class="nav-item"><a class="nav-link text-dark" th:href="@{/contact}">Liên hệ</a></li>
             </ul>
+
             <div class="d-flex align-items-center">
+                <button class="btn p-2" type="button" title="Tìm kiếm"><i class="fas fa-search text-dark"></i></button>
                 <a th:href="@{/cart}" class="btn position-relative me-3" title="Giỏ hàng">
                     <i class="fa fa-shopping-bag text-frubana fs-5"></i>
                     <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
                           th:text="${totalQuantity != null ? totalQuantity : 0}">0</span>
                 </a>
-                <div class="dropdown" sec:authorize="isAuthenticated()">
+
+                <div class="dropdown ms-2" sec:authorize="isAuthenticated()">
                     <button class="btn dropdown-toggle text-dark fw-semibold" id="userMenu" data-bs-toggle="dropdown">
                         <i class="fa fa-user-circle me-1"></i>
                         <span sec:authentication="principal.fullName"></span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm" aria-labelledby="userMenu">
                         <li><a class="dropdown-item" th:href="@{/profile}">Thông tin cá nhân</a></li>
-                        <li><a class="dropdown-item" th:href="@{/orders}">Đơn hàng của tôi</a></li>
-                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" th:href="@{/orders}">Lịch sử đơn hàng</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li>
-                            <form th:action="@{/logout}" method="post">
+                            <form th:action="@{/logout}" method="post" class="m-0">
                                 <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
                             </form>
                         </li>
                     </ul>
                 </div>
-                <div sec:authorize="!isAuthenticated()">
+
+                <div class="d-flex ms-2" sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="btn btn-outline-success me-2">Đăng nhập</a>
                     <a th:href="@{/register}" class="btn btn-success">Đăng ký</a>
                 </div>
@@ -173,78 +319,51 @@
     </div>
 </nav>
 
-<div class="page-header">
-    <div class="header-content text-center">
-        <h1 class="display-4">Cửa Hàng Thực Phẩm</h1>
-        <p class="lead mb-0 text-white-50">Lựa chọn những sản phẩm tươi ngon nhất cho gia đình bạn</p>
+<!-- Hero -->
+<section class="hero">
+    <div class="text-center">
+        <h1 class="fw-bold">Sản Phẩm</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center">
+            </ol>
+        </nav>
     </div>
-</div>
-
-<div class="container mb-5">
-    <form action="/products/search" method="get" class="search-box">
-        <input type="text" class="form-control form-control-lg" name="keyword" placeholder="Bạn muốn tìm gì hôm nay? (ví dụ: Nho, Dâu...)">
-        <button type="submit" class="btn btn-frubana">
-            <i class="fas fa-search"></i>
-        </button>
+</section>
+<!-- ✅ FORM TÌM KIẾM -->
+<div class="container py-4">
+    <form action="/products/search" method="get" class="d-flex justify-content-center gap-2">
+        <input type="text" class="form-control w-50 border-success" name="keyword" placeholder="Tìm sản phẩm...">
+        <button type="submit" class="btn btn-frubana px-4">Tìm</button>
     </form>
 </div>
 
+<!-- ✅ DANH SÁCH SẢN PHẨM -->
 <div class="container pb-5">
-
-    <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
-        <i class="fas fa-box-open fs-1 text-muted mb-3"></i>
-        <h4 class="text-muted">Không tìm thấy sản phẩm nào phù hợp.</h4>
-        <a th:href="@{/products/all}" class="btn btn-outline-success mt-3">Xem tất cả sản phẩm</a>
-    </div>
-
-    <div class="row g-4 justify-content-center" th:unless="${#lists.isEmpty(products)}">
+    <div class="row g-4 justify-content-center">
         <div class="col-6 col-md-4 col-lg-3" th:each="p : ${products}">
-            <div class="card product-card h-100">
-                <a th:href="@{'/products/detail/' + ${p.id}}">
-                    <img th:src="@{'/images/' + ${p.imageUrl}}" class="card-img-top" th:alt="${p.name}">
-                </a>
-
-                <div class="card-body d-flex flex-column p-3">
-                    <h6 class="fw-bold mb-2">
-                        <a th:href="@{'/products/detail/' + ${p.id}}" class="text-decoration-none text-dark hover-green" th:text="${p.name}">Tên sản phẩm</a>
-                    </h6>
-
-                    <div class="mb-3">
-                        <span class="text-muted text-decoration-line-through me-1 small"
-                              th:if="${p.salePrice != null}"
-                              th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
-                        </span>
-                        <span class="fw-bold text-danger fs-5"
-                              th:text="${#numbers.formatDecimal((p.salePrice != null ? p.salePrice : p.price), 0, 'COMMA', 0, 'POINT')} + ' đ'">
-                        </span>
-                    </div>
-
-                    <div class="mt-auto d-flex gap-2">
-                        <a th:href="@{'/products/detail/' + ${p.id}}"
-                           class="btn btn-outline-success btn-sm flex-fill fw-semibold">
-                            <i class="fa fa-eye"></i> Chi tiết
-                        </a>
-
-                        <button type="button" class="btn btn-frubana btn-sm flex-fill add-to-cart-btn fw-semibold"
-                                th:attr="data-id=${p.id},
-                                         data-name=${p.name},
-                                         data-price=${p.salePrice != null ? p.salePrice : p.price},
-                                         data-image=${p.imageUrl}">
-                            <i class="fa fa-cart-plus"></i> Thêm
-                        </button>
-                    </div>
+            <div class="card border-0 shadow-sm h-100">
+                <img th:src="@{'/images/' + ${p.imageUrl}}" class="card-img-top" style="height:230px; object-fit:cover;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-frubana fw-bold" th:text="${p.name}"></h5>
+                    <p class="text-danger fw-bold mb-3">
+                        <span th:text="${#numbers.formatDecimal(p.price,0,'POINT',3,'COMMA')}"></span> VNĐ
+                    </p>
+                    <a th:href="@{'/products/detail/' + ${p.id}}"
+                       class="mt-auto btn btn-frubana w-100">Xem chi tiết</a>
+                    <button type="button" class="btn btn-outline-success w-100 mt-2 add-to-cart-btn"
+                            th:attr="data-id=${p.id},data-name=${p.name},data-price=${p.price},data-image=${p.imageUrl}">
+                        <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<footer class="text-center py-4 bg-white border-top">
-    <p class="mb-1">&copy; 2025 Frubana - Tươi ngon mỗi ngày.</p>
-    <small>Made with <i class="fa fa-heart text-warning"></i> by Team IUH</small>
-</footer>
 
+<!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="/script/cart_badge.js"></script>
 <script src="/script/cart.js"></script>
 </body>

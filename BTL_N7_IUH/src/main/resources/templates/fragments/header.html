@@ -4,40 +4,54 @@
 
 <div th:fragment="header(activeNav)">
 
-    <div class="topbar py-2 bg-frubana text-white small fixed-top">
+    <!-- TOPBAR -->
+    <div class="topbar py-2 bg-frubana text-white small fixed-top shadow-sm">
         <div class="container d-flex justify-content-between flex-wrap align-items-center">
-            <div>
-                <i class="fa fa-map-marker-alt me-1"></i> 14 Nguyễn Văn Bảo, Gò Vấp
-                <span class="mx-2">|</span>
-                <i class="fa fa-envelope me-1"></i> fruitngon@gmail.com
+            <div class="d-flex gap-3">
+                <span><i class="fa fa-map-marker-alt me-1"></i> 14 Nguyễn Văn Bảo, Gò Vấp</span>
+                <span><i class="fa fa-envelope me-1"></i> fruitngon@gmail.com</span>
             </div>
-            <div>
-                <a th:href="@{/privary}" class="text-white text-decoration-none me-3">Chính sách bảo mật</a>
+
+            <div class="d-flex gap-3">
+                <a th:href="@{/privary}" class="text-white text-decoration-none">Chính sách bảo mật</a>
                 <a th:href="@{/term_of_service}" class="text-white text-decoration-none">Điều khoản dịch vụ</a>
             </div>
         </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-navbar">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg shadow-sm custom-navbar fixed-top"
+         style="top: 36px; backdrop-filter: blur(12px); background: rgba(255,255,255,0.92);">
+
         <div class="container py-2">
-            <a class="navbar-brand fs-3 fw-bold text-frubana" th:href="@{/}">
-                <i class="fa-solid fa-leaf me-1"></i> Frubana
+
+            <!-- LOGO -->
+            <a class="navbar-brand fs-3 fw-bold text-frubana d-flex align-items-center" th:href="@{/}">
+                <i class="fa-solid fa-leaf me-2"></i>
+                Frubana
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <!-- TOGGLER -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+            <!-- NAV ITEMS -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto fw-semibold">
+                <ul class="navbar-nav mx-auto fw-semibold gap-lg-3">
+
                     <li class="nav-item">
-                        <a class="nav-link" th:classappend="${activeNav == 'home'} ? 'active' : ''"
+                        <a class="nav-link px-3 rounded-pill"
+                           th:classappend="${activeNav == 'home'} ? 'active-nav' : ''"
                            th:href="@{/}">Trang chủ</a>
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" th:classappend="${activeNav == 'products'} ? 'active' : ''"
+                        <a class="nav-link dropdown-toggle px-3 rounded-pill"
+                           th:classappend="${activeNav == 'products'} ? 'active-nav' : ''"
                            href="#" data-bs-toggle="dropdown">Sản phẩm</a>
+
                         <ul class="dropdown-menu border-0 shadow fade-down">
                             <li><a class="dropdown-item" th:href="@{/products/vegetable}">Rau củ quả</a></li>
                             <li><a class="dropdown-item" th:href="@{/products/fruit}">Trái cây</a></li>
@@ -48,49 +62,91 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" th:classappend="${activeNav == 'testimonials'} ? 'active' : ''"
+                        <a class="nav-link px-3 rounded-pill"
+                           th:classappend="${activeNav == 'testimonials'} ? 'active-nav' : ''"
                            th:href="@{/testimonials}">Lời chứng thực</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" th:classappend="${activeNav == 'contact'} ? 'active' : ''"
+                        <a class="nav-link px-3 rounded-pill"
+                           th:classappend="${activeNav == 'contact'} ? 'active-nav' : ''"
                            th:href="@{/contact}">Liên hệ</a>
                     </li>
+
                 </ul>
 
-                <div class="d-flex align-items-center">
-                    <a th:href="@{/cart}" class="btn position-relative me-3" title="Giỏ hàng">
+                <!-- ACTIONS -->
+                <div class="d-flex align-items-center gap-3">
+
+                    <!-- Cart icon -->
+                    <a th:href="@{/cart}" class="btn position-relative" title="Giỏ hàng">
                         <i class="fa fa-shopping-bag text-frubana fs-5"></i>
                         <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
-                              th:text="${totalQuantity != null ? totalQuantity : 0}">0</span>
+                              th:text="${totalQuantity != null ? totalQuantity : 0}">
+                        </span>
                     </a>
 
+                    <!-- If logged in -->
                     <div class="dropdown" sec:authorize="isAuthenticated()">
-                        <button class="btn dropdown-toggle text-dark fw-semibold" id="userMenu" data-bs-toggle="dropdown">
+                        <button class="btn dropdown-toggle text-dark fw-semibold" data-bs-toggle="dropdown">
                             <i class="fa fa-user-circle me-1"></i>
                             <span sec:authentication="principal.fullName"></span>
                         </button>
+
                         <ul class="dropdown-menu dropdown-menu-end border-0 shadow fade-down">
                             <li><a class="dropdown-item" th:href="@{/profile}">Thông tin cá nhân</a></li>
                             <li><a class="dropdown-item" th:href="@{/orders}">Đơn hàng của tôi</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form th:action="@{/logout}" method="post" class="m-0">
+                                <form th:action="@{/logout}" method="post">
                                     <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
                                 </form>
                             </li>
                         </ul>
                     </div>
 
+                    <!-- If not logged in -->
                     <div sec:authorize="!isAuthenticated()">
-                        <a th:href="@{/login}" class="btn btn-outline-success me-2">Đăng nhập</a>
-                        <a th:href="@{/register}" class="btn btn-success">Đăng ký</a>
+                        <a th:href="@{/login}" class="btn btn-outline-success">Đăng nhập</a>
+                        <a th:href="@{/register}" class="btn btn-success ms-2">Đăng ký</a>
                     </div>
+
                 </div>
             </div>
         </div>
     </nav>
+
 </div>
+
+<style>
+    /* NAV ITEM HOVER */
+    .nav-link {
+        transition: 0.25s ease;
+    }
+
+    .nav-link:hover {
+        background: rgba(109, 156, 58, 0.12);
+        color: var(--frubana-green) !important;
+    }
+
+    /* ACTIVE NAV */
+    .active-nav {
+        background: var(--frubana-green);
+        color: white !important;
+        border-radius: 20px;
+        padding: 6px 18px !important;
+    }
+
+    /* DROPDOWN EFFECT */
+    .fade-down {
+        animation: fadeDown 0.25s ease;
+    }
+
+    @keyframes fadeDown {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 
 </body>
 </html>
