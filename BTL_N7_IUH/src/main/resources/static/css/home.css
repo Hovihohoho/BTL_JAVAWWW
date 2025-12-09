@@ -1,69 +1,250 @@
+/* =========================================
+   GLOBAL VARIABLES & RESET
+   ========================================= */
 :root {
-    --frubana-green: #6d9c3a;
-    --frubana-dark: #5b8731;
-    --frubana-light: #e9f6df;
+    --frubana-green: #6d9c3a;       /* Màu xanh chính */
+    --frubana-dark-green: #5b8731;  /* Màu xanh đậm (dùng cho hover, topbar) */
+    --frubana-light: #e9f6df;       /* Màu nền nhẹ */
+    --text-dark: #333333;           /* Màu chữ đen */
 }
 
-/* Button & theme */
+/* Đẩy nội dung body xuống để không bị Header (fixed) che mất */
+/* Điều chỉnh số px này nếu header của bạn cao hơn hoặc thấp hơn */
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #fcfcfc;
+    padding-top: 110px;
+}
+
+/* =========================================
+   1. TOPBAR (Thanh thông tin trên cùng)
+   ========================================= */
+.topbar {
+    background-color: var(--frubana-dark-green) !important;
+    color: #ffffff !important;
+    font-size: 0.85rem;
+    font-weight: 500;
+    height: 40px; /* Chiều cao cố định */
+    display: flex;
+    align-items: center;
+
+    /* Cố định vị trí */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1031; /* Cao hơn Navbar */
+}
+
+.topbar a {
+    color: #ffffff !important;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.topbar a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* =========================================
+   2. NAVBAR (Thanh menu chính)
+   ========================================= */
+.custom-navbar {
+    background-color: #ffffff !important; /* Nền trắng tuyệt đối */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Đổ bóng nhẹ */
+    transition: all 0.3s ease;
+
+    /* Cố định ngay dưới Topbar */
+    position: fixed;
+    top: 40px; /* Cách top đúng bằng chiều cao Topbar */
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/* Logo thương hiệu */
+.navbar-brand {
+    color: var(--frubana-green) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* Link Menu */
+.navbar-nav .nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+/* Hiệu ứng Hover & Active cho Menu */
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--frubana-green) !important;
+}
+
+/* Gạch chân xanh chạy ra khi hover */
+.navbar-nav .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    width: 0%;
+    height: 2px;
+    background: var(--frubana-green);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+    width: 70%;
+}
+
+/* Dropdown Menu - Hiệu ứng trượt xuống */
+.dropdown-menu.fade-down {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.nav-item.dropdown:hover .dropdown-menu.fade-down {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Dropdown Item */
+.dropdown-item:hover {
+    background-color: var(--frubana-light);
+    color: var(--frubana-dark-green);
+}
+
+/* User Menu & Cart Icon */
+#userMenu {
+    color: var(--text-dark) !important;
+}
+.fa-shopping-bag {
+    color: var(--frubana-green) !important;
+}
+
+/* =========================================
+   3. COMPONENTS (Nút, Card, Banner...)
+   ========================================= */
+
+/* Nút bấm chung */
 .btn-frubana {
     background-color: var(--frubana-green);
     color: #fff;
     border: none;
     transition: 0.3s;
+    font-weight: 500;
 }
 .btn-frubana:hover {
-    background-color: var(--frubana-dark);
+    background-color: var(--frubana-dark-green);
+    color: #fff;
 }
 
-/* Navbar hover effect */
-.navbar-nav .nav-link {
-    transition: color 0.3s;
-}
-.navbar-nav .nav-link:hover {
-    color: var(--frubana-green);
-}
-
-/* Service cards */
+/* Service Item (Icon dịch vụ) */
 .service-item {
+    padding: 20px;
+    border-radius: 10px;
+    background: #fff;
     transition: all 0.3s ease;
 }
-.hover-rise:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+.service-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Product cards */
-.product-card img {
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px 8px 0 0;
-}
+/* Product Card (Thẻ sản phẩm) */
 .product-card {
-    transition: all 0.3s ease;
+    background: #fff;
+    border: none;
     border-radius: 8px;
     overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.product-card img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+/* Zoom ảnh nhẹ khi hover */
+.product-card:hover img {
+    transform: scale(1.05);
 }
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-/* Carousel */
+/* Carousel Caption (Banner text) */
 .carousel-caption {
-    background: rgba(255, 255, 255, 0.7);
-    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1.5rem 2rem;
     border-radius: 10px;
+    color: #333;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    max-width: 600px;
+    margin: 0 auto;
+    bottom: 20%;
+}
+.carousel-caption h1 {
+    color: var(--frubana-dark-green);
 }
 
 /* Footer */
 footer {
     background-color: var(--frubana-green);
+    color: white;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    margin-top: 3rem;
 }
 
-/* Responsive */
+/* =========================================
+   4. RESPONSIVE
+   ========================================= */
+@media (max-width: 991px) {
+    /* Trên Mobile/Tablet: Navbar không fix cứng top 40px nữa để tránh vỡ layout */
+    .custom-navbar {
+        position: sticky;
+        top: 0;
+        margin-top: 0 !important;
+    }
+
+    body {
+        padding-top: 40px; /* Chỉ chừa chỗ cho Topbar */
+    }
+
+    .navbar-collapse {
+        background: white;
+        padding: 1rem;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+}
+
 @media (max-width: 768px) {
     .carousel-caption {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+        padding: 1rem;
+        width: 90%;
         bottom: 10%;
+    }
+    .carousel-caption h1 {
+        font-size: 1.2rem;
     }
 }
