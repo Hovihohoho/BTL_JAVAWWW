@@ -1,0 +1,116 @@
+<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, 'Quản lý Tài khoản')}">
+
+    <div th:fragment="content">
+
+        <h2 class="fw-bold mb-4 page-title">
+            <i class="fas fa-user-edit me-2"></i>
+            <span th:text="${account.id == null} ? 'THÊM TÀI KHOẢN MỚI' : 'CHỈNH SỬA TÀI KHOẢN'"></span>
+        </h2>
+
+        <!-- Thông báo -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="m-0 fw-bold text-primary"
+                    th:text="${account.id == null} ? 'Thêm tài khoản' : 'Cập nhật tài khoản'"></h6>
+
+                <a th:href="@{/admin/accounts}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                </a>
+            </div>
+
+            <div class="card-body">
+
+                <!-- FORM ADD / EDIT -->
+                <form th:object="${account}"
+                      th:action="${account.id} == null ?
+                                  @{/admin/accounts/add} :
+                                  @{/admin/accounts/edit/{id}(id=${account.id})}"
+                      method="post">
+
+                    <!-- Ẩn id khi edit -->
+                    <input type="hidden" th:if="${account.id != null}" th:field="*{id}"/>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" th:field="*{username}" required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" th:field="*{email}" required/>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <!-- Khi thêm mới: bắt buộc nhập password.
+                             Khi sửa: có thể để trống = không đổi mật khẩu -->
+                        <div class="col-md-6">
+                            <label class="form-label" th:text="${account.id == null} ? 'Mật khẩu' : 'Mật khẩu (để trống nếu không đổi)'"></label>
+                            <input type="password" class="form-control" name="rawPassword"/>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Quyền (Role)</label>
+                            <select class="form-select" name="roleId" required>
+                                <option value="" disabled
+                                        th:if="${account.role == null}"
+                                        selected>-- Chọn quyền --</option>
+                                <option th:each="r : ${roles}"
+                                        th:value="${r.id}"
+                                        th:selected="${account.role != null and account.role.id == r.id}"
+                                        th:text="${r.name}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr/>
+
+                    <h5 class="mb-3">Thông tin chi tiết</h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Họ tên</label>
+                            <input type="text" class="form-control"
+                                   th:field="*{accountDetail.fullName}"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control"
+                                   th:field="*{accountDetail.phoneNumber}"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-select" th:field="*{isEnabled}">
+                                <option th:value="true">Hoạt động</option>
+                                <option th:value="false">Bị khóa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ</label>
+                        <textarea class="form-control" rows="2"
+                                  th:field="*{accountDetail.address}"></textarea>
+                    </div>
+
+                    <div class="text-end">
+                        <a th:href="@{/admin/accounts}" class="btn btn-secondary me-2">
+                            Hủy
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>
+                            <span th:text="${account.id == null} ? 'Lưu mới' : 'Cập nhật'"></span>
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>

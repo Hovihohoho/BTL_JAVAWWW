@@ -72,21 +72,15 @@ public class OrderService {
 
         return savedOrder;
     }
-    public Order updateOrderStatus(Long orderId, String statusName) {
+    public void updateOrderStatus(Long orderId, Long statusId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng!"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy order id = " + orderId));
 
-        OrderStatus status = orderStatusRepository.findByName(statusName)
-                .orElseGet(() -> {
-                    OrderStatus s = new OrderStatus();
-                    s.setName(statusName);
-                    s.setDescription("Tự tạo khi cập nhật trạng thái");
-                    return orderStatusRepository.save(s);
-                });
+        OrderStatus status = orderStatusRepository.findById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy trạng thái id = " + statusId));
 
         order.setOrderStatus(status);
-
-        return orderRepository.save(order);
+        orderRepository.save(order);
     }
 
     public void deleteById(Long id) {

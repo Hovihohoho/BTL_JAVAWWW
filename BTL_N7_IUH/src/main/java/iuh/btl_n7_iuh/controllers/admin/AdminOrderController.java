@@ -56,7 +56,7 @@ public class AdminOrderController {
                                @RequestParam("statusId") Long statusId,
                                RedirectAttributes redirectAttributes) {
         try {
-            orderService.updateOrderStatus(orderId, String.valueOf(statusId));
+            orderService.updateOrderStatus(orderId, statusId);
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật trạng thái thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi cập nhật trạng thái: " + e.getMessage());
