@@ -5,6 +5,10 @@
       <i class="fas fa-shopping-basket me-2"></i> DANH SÁCH SẢN PHẨM
     </h2>
 
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+
     <div class="card shadow">
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Quản lý Sản phẩm</h6>
@@ -39,7 +43,7 @@
               <td th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy')}">20/01/2025</td>
               <td>
                 <a th:href="@{'/admin/products/edit/' + ${product.id}}" class="btn btn-sm btn-warning me-2"><i class="fas fa-edit"></i> Sửa</a>
-                <form th:action="@{'/admin/products/delete/' + ${product.id}}" method="post}" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                <form th:action="@{'/admin/products/delete/' + ${product.id}}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
                   <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i> Xóa</button>
                 </form>
               </td>

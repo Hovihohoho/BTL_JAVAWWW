@@ -20,8 +20,7 @@ import java.util.List;
 public class AdminController {
 
     private final AccountRepository accountRepository;
-    private final CategoryRepository categoryRepository; // Inject CategoryRepository
-    private final ProductRepository productRepository; // Inject ProductRepository
+
 
     @GetMapping({"", "/"})
     public String adminHome(Model model) {
@@ -30,35 +29,14 @@ public class AdminController {
     }
 
     /**
-     * Màn hình Quản lý Tài khoản
+     * Màn hình Quản lý Tài khoản (GIỮ LẠI)
      */
-    @GetMapping("/accounts")
-    public String manageAccounts(Model model) {
-        List<Account> accounts = accountRepository.findAll();
-        model.addAttribute("accounts", accounts);
-        model.addAttribute("title", "Quản lý Tài khoản - Frubana");
-        return "admin/accounts/list";
+/**    @GetMapping("/accounts")
+//    public String manageAccounts(Model model) {
+//        List<Account> accounts = accountRepository.findAll();
+//        model.addAttribute("accounts", accounts);
+//        model.addAttribute("title", "Quản lý Tài khoản - Frubana");
+//        return "admin/accounts/list";
     }
-
-    /**
-     * Màn hình Quản lý Danh mục (MỚI)
-     */
-    @GetMapping("/categories")
-    public String manageCategories(Model model) {
-        List<Category> categories = categoryRepository.findAll();
-        model.addAttribute("categories", categories); // Truyền danh sách danh mục
-        model.addAttribute("title", "Quản lý Danh mục - Frubana");
-        return "admin/categories/list";
-    }
-
-    /**
-     * Màn hình Quản lý Sản phẩm (MỚI)
-     */
-    @GetMapping("/products")
-    public String manageProducts(Model model) {
-        List<Product> products = productRepository.findAll();
-        model.addAttribute("products", products); // Truyền danh sách sản phẩm
-        model.addAttribute("title", "Quản lý Sản phẩm - Frubana");
-        return "admin/products/list";
-    }
+*/
 }

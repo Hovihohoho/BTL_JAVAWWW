@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "Order_Statuses")
+@Table(name = "order_statuses")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,8 +15,7 @@ public class OrderStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Sửa tên thành "name" cho khớp với OrderService
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name = "status_name", nullable = false, unique = true, length = 50)
     private String name;
 
     // ✅ Thêm cột mô tả để tránh lỗi setDescription()

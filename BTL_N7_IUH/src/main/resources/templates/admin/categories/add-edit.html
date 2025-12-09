@@ -1,0 +1,36 @@
+<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, ${title})}">
+
+    <div th:fragment="content">
+        <h2 class="fw-bold mb-4 page-title">
+            <i class="fas fa-list me-2"></i>
+            <span th:text="${category.id == null ? 'THÊM MỚI DANH MỤC' : 'SỬA DANH MỤC'}"></span>
+        </h2>
+
+        <div class="card shadow col-lg-8 mx-auto">
+            <div class="card-body p-4">
+                <form th:action="@{/admin/categories/save}" method="post" th:object="${category}">
+
+                    <input type="hidden" th:field="*{id}" />
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-bold">Tên Danh mục (*)</label>
+                        <input type="text" th:field="*{name}" id="name" class="form-control" required/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="slug" class="form-label fw-bold">Slug (URL thân thiện)</label>
+                        <input type="text" th:field="*{slug}" id="slug" class="form-control" placeholder="Tự động tạo nếu để trống"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-bold">Mô tả</label>
+                        <textarea th:field="*{description}" id="description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Lưu Danh mục</button>
+                    <a th:href="@{/admin/categories}" class="btn btn-secondary">Hủy</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
