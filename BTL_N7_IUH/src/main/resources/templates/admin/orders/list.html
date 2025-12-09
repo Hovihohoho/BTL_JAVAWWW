@@ -1,0 +1,188 @@
+<div th:replace="~{admin/layout/main_layout :: layout(~{::content}, 'Quản lý Đơn hàng')}">
+
+    <div th:fragment="content">
+
+        <h2 class="fw-bold mb-4 page-title">
+            <i class="fas fa-file-invoice me-2"></i> DANH SÁCH ĐƠN HÀNG
+        </h2>
+
+        <!-- Alerts -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 fw-bold text-primary">Quản lý Đơn hàng</h6>
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 text-center">
+                        <thead class="table-dark">
+                        <tr>
+                            <th style="width: 4%;">ID</th>
+                            <th style="width: 14%;">Khách hàng</th>
+                            <th style="width: 14%;">Ngày đặt</th>
+                            <th style="width: 12%;">Tổng tiền</th>
+                            <th style="width: 10%;">Thanh toán</th>
+                            <th style="width: 18%;">Địa chỉ giao</th>
+                            <th style="width: 14%;">Trạng thái</th>
+                            <th style="width: 10%;">Thao tác</th>
+                            <th style="width: 8%;">Chi tiết</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <!-- Lặp từng order + row chi tiết ngay phía sau -->
+                        <th:block th:each="order : ${orders}">
+
+                            <!-- Row chính -->
+                            <tr>
+                                <td th:text="${order.id}">1</td>
+
+                                <!-- account.username hoặc 'Khách lẻ' -->
+                                <td th:text="${order.account != null ? order.account.username : 'Khách lẻ'}">
+                                    NguyenVanLong
+                                </td>
+
+                                <!-- order_date -->
+                                <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">
+                                    27/11/2025 16:51
+                                </td>
+
+                                <!-- total_amount -->
+                                <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA')} + ' đ'">
+                                    139.000 đ
+                                </td>
+
+                                <!-- payment_method -->
+                                <td th:text="${order.paymentMethod}">COD</td>
+
+                                <!-- shipping_address -->
+                                <td th:text="${order.shippingAddress}">45 Lê Lợi, TP.HCM</td>
+
+                                <!-- Trạng thái: select các OrderStatus -->
+                                <td>
+                                    <form th:action="@{'/admin/orders/' + ${order.id} + '/status'}"
+                                          method="post"
+                                          class="d-flex justify-content-center">
+
+                                        <select name="statusId" class="form-select form-select-sm w-auto me-2">
+                                            <option th:each="st : ${statuses}"
+                                                    th:value="${st.id}"
+                                                    th:selected="${order.orderStatus != null and order.orderStatus.id == st.id}"
+                                                    th:text="${st.name}">
+                                                PENDING
+                                            </option>
+                                        </select>
+
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            Lưu
+                                        </button>
+                                    </form>
+                                </td>
+
+                                <!-- Thao tác: xoá đơn -->
+                                <td>
+                                    <form th:action="@{'/admin/orders/delete/' + ${order.id}}"
+                                          method="post"
+                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này?');">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash-alt"></i> Xóa
+                                        </button>
+                                    </form>
+                                </td>
+
+                                <!-- Nút xem chi tiết: mở row bên dưới -->
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary toggle-details"
+                                            th:attr="data-order-id=${order.id}">
+                                        <i class="fas fa-list"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Row chi tiết đơn hàng (ẩn/hiện bằng JS) -->
+                            <tr class="order-details-row"
+                                th:attr="data-order-id=${order.id}"
+                                style="display:none;">
+                                <td colspan="9" class="bg-light text-start">
+
+                                    <div th:if="${orderDetailsMap != null and orderDetailsMap[order.id] != null}">
+                                        <strong>
+                                            Chi tiết sản phẩm của đơn #
+                                            <span th:text="${order.id}">1</span>
+                                        </strong>
+
+                                        <table class="table table-sm mt-2 mb-0">
+                                            <thead>
+                                            <tr>
+                                                <th>Sản phẩm</th>
+                                                <th style="width: 10%;">Số lượng</th>
+                                                <th style="width: 15%;">Đơn giá</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="detail : ${orderDetailsMap[order.id]}">
+                                                <td th:text="${detail.product != null ? detail.product.name : 'Sản phẩm #' + detail.productId}">
+                                                    Rau hữu cơ
+                                                </td>
+                                                <td th:text="${detail.quantity}">1</td>
+                                                <td th:text="${#numbers.formatDecimal(detail.price, 0, 'POINT', 0, 'COMMA')} + ' đ'">
+                                                    59.000 đ
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Không có order_detail -->
+                                    <div th:if="${orderDetailsMap == null or orderDetailsMap[order.id] == null}">
+                                        <em>Đơn hàng này chưa có chi tiết nào.</em>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </th:block>
+
+                        <!-- Không có order -->
+                        <tr th:if="${#lists.isEmpty(orders)}">
+                            <td colspan="9" class="text-center text-muted fst-italic py-3">
+                                Không tìm thấy đơn hàng nào.
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- JS toggle chi tiết -->
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            document.addEventListener('DOMContentLoaded', function () {
+                const buttons = document.querySelectorAll('.toggle-details');
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const orderId = this.getAttribute('data-order-id');
+                        const row = document.querySelector(
+                            '.order-details-row[data-order-id="' + orderId + '"]'
+                        );
+                        if (!row) return;
+
+                        const isHidden = row.style.display === 'none' || row.style.display === '';
+                        row.style.display = isHidden ? 'table-row' : 'none';
+                    });
+                });
+            });
+            /*]]>*/
+        </script>
+
+    </div>
+</div>
