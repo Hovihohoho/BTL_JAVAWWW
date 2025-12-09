@@ -21,5 +21,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
            left join fetch o.orderDetails od
            left join fetch od.product p
            """)
-    List<Order> findAllWithDetails();
+    List<Order> findAll();
 }

@@ -294,10 +294,9 @@
                 </a>
 
                 <div class="dropdown ms-2" sec:authorize="isAuthenticated()">
-                    <button class="btn dropdown-toggle text-dark fw-semibold" type="button" id="userMenu"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user-circle me-1"></i>
-                        <span sec:authentication="name">Tên người dùng</span>
+                    <button class="btn dropdown-toggle text-dark fw-semibold" id="userMenu" data-bs-toggle="dropdown">
+                        <i class="fa fa-user-circle me-1"></i>
+                        <span sec:authentication="principal.fullName"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm" aria-labelledby="userMenu">
                         <li><a class="dropdown-item" th:href="@{/profile}">Thông tin cá nhân</a></li>

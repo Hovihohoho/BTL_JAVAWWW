@@ -151,8 +151,8 @@
 </head>
 <body>
 
-<!-- Top bar and navbar use Bootstrap's .container, do not override -->
-<div class="top-bar py-2 bg-frubana text-white" style="font-size: 0.8rem;">
+<!-- Top bar -->
+<div class="top-bar py-2 bg-frubana text-white" style="font-size:.8rem;">
     <div class="container d-flex justify-content-between align-items-center">
         <div class="contact-info d-none d-md-block">
             <span class="me-3"><i class="fas fa-map-marker-alt"></i> Địa Chỉ: 14 Nguyễn Văn Bảo, phường Hanh Thông, TP.HCM</span>
@@ -165,23 +165,24 @@
     </div>
 </div>
 
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
-        <a class="navbar-brand fs-2 fw-bold text-frubana" th:href="@{/}">
-            Frubana
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand fs-2 fw-bold text-frubana" th:href="@{/}">Frubana</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold">
                 <li class="nav-item">
-                    <a class="nav-link text-frubana active" aria-current="page" th:href="@{/}">Trang chủ</a>
+                    <a class="nav-link text-frubana active" th:href="@{/}">Trang chủ</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Sản phẩm
-                    </a>
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">Sản phẩm</a>
                     <ul class="dropdown-menu border-0 shadow-sm" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" th:href="@{/products/vegetable}">Rau củ quả</a></li>
                         <li><a class="dropdown-item" th:href="@{/products/fruit}">Trái cây</a></li>
@@ -189,42 +190,35 @@
                         <li><a class="dropdown-item" th:href="@{/products/all}">Xem tất cả</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" th:href="@{/testimonials}">Lời chứng thực</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" th:href="@{/contact}">Liên hệ</a>
-                </li>
+                <li class="nav-item"><a class="nav-link text-dark" th:href="@{/testimonials}">Lời chứng thực</a></li>
+                <li class="nav-item"><a class="nav-link text-dark" th:href="@{/contact}">Liên hệ</a></li>
             </ul>
+
             <div class="d-flex align-items-center">
-                <button class="btn p-2" type="button" title="Tìm kiếm">
-                    <i class="fas fa-search text-dark"></i>
-                </button>
+                <button class="btn p-2" type="button" title="Tìm kiếm"><i class="fas fa-search text-dark"></i></button>
                 <a th:href="@{/cart}" class="btn position-relative me-3" title="Giỏ hàng">
                     <i class="fa fa-shopping-bag text-frubana fs-5"></i>
                     <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
                           th:text="${totalQuantity != null ? totalQuantity : 0}">0</span>
                 </a>
 
-                <!-- Hiển thị khi ĐÃ ĐĂNG NHẬP -->
                 <div class="dropdown ms-2" sec:authorize="isAuthenticated()">
-                    <button class="btn dropdown-toggle text-dark fw-semibold" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user-circle me-1"></i>
-                        <span sec:authentication="name">Tên người dùng</span>
+                    <button class="btn dropdown-toggle text-dark fw-semibold" id="userMenu" data-bs-toggle="dropdown">
+                        <i class="fa fa-user-circle me-1"></i>
+                        <span sec:authentication="principal.fullName"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm" aria-labelledby="userMenu">
                         <li><a class="dropdown-item" th:href="@{/profile}">Thông tin cá nhân</a></li>
                         <li><a class="dropdown-item" th:href="@{/orders}">Lịch sử đơn hàng</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <form th:action="@{/logout}" method="post" style="margin: 0;">
-                                <button type="submit" class="dropdown-item text-danger" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer;">Đăng xuất</button>
+                            <form th:action="@{/logout}" method="post" class="m-0">
+                                <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
                             </form>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Hiển thị khi CHƯA ĐĂNG NHẬP -->
                 <div class="d-flex ms-2" sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}" class="btn btn-outline-success me-2">Đăng nhập</a>
                     <a th:href="@{/register}" class="btn btn-success">Đăng ký</a>
@@ -233,19 +227,20 @@
         </div>
     </div>
 </nav>
+
     <!-- Main content uses custom .main-container -->
     <div class="main-container">
         <div class="contact-map">
             <iframe src="https://www.google.com/maps?q=235+Hoàng+Quốc+Việt,+Bắc+Từ+Liêm,+Hà+Nội&output=embed" width="100%" height="100%" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
         </div>
         <div class="contact-main">
-            <form class="contact-form" method="post" th:action="@{/contact}" th:object="${contact}" id="contactForm" novalidate>
-                <input type="text" th:field="*{name}" placeholder="Tên Của bạn" required>
-                <div class="error" id="nameError" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Tên không được để trống</div>
-                <input type="email" th:field="*{email}" placeholder="Email Của bạn" required>
-                <div class="error" id="emailError" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email không được để trống</div>
-                <textarea th:field="*{message}" placeholder="Nội dung" required></textarea>
-                <div class="error" id="messageError" th:if="${#fields.hasErrors('message')}" th:errors="*{message}">Nội dung không được để trống</div>
+            <form class="contact-form" method="post" action="/contact">
+                <input type="text" name="name" placeholder="Tên Của bạn" required>
+                <div class="error">Tên không được để trống</div>
+                <input type="email" name="email" placeholder="Email Của bạn" required>
+                <div class="error">Email không được để trống</div>
+                <textarea name="message" placeholder="Nội dung" required></textarea>
+                <div class="error">Nội dung không được để trống</div>
                 <button type="submit">Gửi liên hệ</button>
                 <div th:if="${success != null}" class="mt-3">
                     <div th:if="${success}" class="alert alert-success">Gửi liên hệ thành công!</div>

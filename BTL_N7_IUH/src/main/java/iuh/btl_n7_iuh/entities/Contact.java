@@ -1,9 +1,12 @@
 package iuh.btl_n7_iuh.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @Table(name = "contacts")
 public class Contact {
     @Id

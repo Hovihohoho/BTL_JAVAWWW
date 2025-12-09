@@ -39,6 +39,6 @@ public class Order {
     @Column(name = "payment_method", length = 50)
     private String paymentMethod;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // Thêm fetch = FetchType.EAGER
     private List<OrderDetail> orderDetails;
 }

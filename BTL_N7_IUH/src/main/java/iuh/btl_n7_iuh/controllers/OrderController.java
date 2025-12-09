@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import iuh.btl_n7_iuh.security.CustomUserDetails;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -27,6 +28,18 @@ public class OrderController {
         List<Order> orders = orderService.getOrdersByUsername(username);
 
         model.addAttribute("orders", orders);
-        return "orders"; // ✅ trỏ tới file orders.html
+        return "orders";
+    }
+
+    @GetMapping("/orders/{id}")
+    public String viewOrder(@PathVariable Long id, Model model) {
+        Order order = orderService.getOrderById(id);
+        if (order == null) {
+            return "redirect:/orders?error=notfound";
+        }
+
+        model.addAttribute("order", order);
+        return "order-detail";
     }
 }
+

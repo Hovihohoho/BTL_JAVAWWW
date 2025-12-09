@@ -20,7 +20,7 @@ public class OrderDetail {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    // ✅ QUAN TRỌNG: Phải khai báo là đối tượng Product để Repository có thể "join fetch"
+    // ✅ Quan trọng: Phải có đối tượng Product để HTML gọi được detail.product.name
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

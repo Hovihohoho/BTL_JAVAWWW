@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -36,7 +35,7 @@ public class OrderService {
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản!"));
 
-        // ✅ SỬA: Dùng "PENDING" để khớp với DataBTL2.sql
+        // Lấy trạng thái phù hợp
         String statusName = paymentMethod.equalsIgnoreCase("COD") ? "PENDING" : "Đã thanh toán";
 
         OrderStatus status = orderStatusRepository.findByName(statusName)
@@ -57,19 +56,14 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        // ✅ ĐÃ SỬA: Tìm Product từ DB và gán vào OrderDetail (QUAN TRỌNG)
+        // ✅ ĐÃ SỬA: Tìm Product từ DB và gán vào OrderDetail
         for (CartItem item : cartItems) {
-            // 1. Tìm sản phẩm thực tế từ DB
             Product product = productRepository.findById(item.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm ID: " + item.getProductId()));
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm có ID: " + item.getProductId()));
 
             OrderDetail detail = new OrderDetail();
             detail.setOrder(savedOrder);
-
-            // 2. Gán object Product (Hibernate sẽ tự lấy ID để lưu vào cột product_id)
-            detail.setProduct(product);
-
-            // 3. Các thông tin khác
+            detail.setProduct(product); // Quan trọng: Gán object Product, không gán ID lẻ
             detail.setPrice(BigDecimal.valueOf(item.getPrice()));
             detail.setQuantity(item.getQuantity());
 
@@ -78,37 +72,46 @@ public class OrderService {
 
         return savedOrder;
     }
+    public Order updateOrderStatus(Long orderId, String statusName) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng!"));
 
-    public List<Order> getOrdersByUsername(String username) {
-        return orderRepository.findByAccountUsername(username);
+        OrderStatus status = orderStatusRepository.findByName(statusName)
+                .orElseGet(() -> {
+                    OrderStatus s = new OrderStatus();
+                    s.setName(statusName);
+                    s.setDescription("Tự tạo khi cập nhật trạng thái");
+                    return orderStatusRepository.save(s);
+                });
+
+        order.setOrderStatus(status);
+
+        return orderRepository.save(order);
     }
 
-    // Các phương thức bổ sung
-    public Optional<Order> getOrderById(Long id) {
-        return orderRepository.findById(id);
+    public void deleteById(Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new RuntimeException("Đơn hàng không tồn tại!");
+        }
+
+        // Xóa OrderDetail trước (tránh lỗi FK)
+        orderDetailRepository.deleteByOrderId(id);
+
+        // Xóa Order
+        orderRepository.deleteById(id);
     }
 
-    // Dùng cho Admin Controller (nếu có)
-    public List<Order> findAllWithDetails() {
-        return orderRepository.findAllWithDetails();
-    }
+
 
     public List<Order> findAll() {
         return orderRepository.findAll();
     }
 
-    public void updateOrderStatus(Long orderId, Long statusId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy order id = " + orderId));
-
-        OrderStatus status = orderStatusRepository.findById(statusId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy trạng thái id = " + statusId));
-
-        order.setOrderStatus(status);
-        orderRepository.save(order);
+    public Order getOrderById(Long id) {
+        return orderRepository.findById(id).orElse(null);
     }
 
-    public void deleteById(Long id) {
-        orderRepository.deleteById(id);
+    public List<Order> getOrdersByUsername(String username) {
+        return orderRepository.findByAccountUsername(username);
     }
 }

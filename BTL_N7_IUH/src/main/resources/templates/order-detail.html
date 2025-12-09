@@ -129,8 +129,9 @@
                     <i class="fa fa-shopping-bag text-frubana fs-5"></i>
                 </a>
                 <div class="dropdown" sec:authorize="isAuthenticated()">
-                    <button class="btn dropdown-toggle text-dark fw-semibold" data-bs-toggle="dropdown">
-                        <i class="fa fa-user-circle me-1"></i> <span sec:authentication="name">User</span>
+                    <button class="btn dropdown-toggle text-dark fw-semibold" id="userMenu" data-bs-toggle="dropdown">
+                        <i class="fa fa-user-circle me-1"></i>
+                        <span sec:authentication="principal.fullName"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
                         <li><a class="dropdown-item" th:href="@{/orders}">Lịch sử đơn hàng</a></li>
