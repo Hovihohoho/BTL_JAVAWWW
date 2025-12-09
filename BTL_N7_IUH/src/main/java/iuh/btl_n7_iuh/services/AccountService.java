@@ -53,6 +53,10 @@
                         return accountRepository.findByEmail(email);
                     }
 
+                    public Account findByUsername(String username) {
+                        return accountRepository.findByUsername(username).orElse(null);
+                    }
+
                     public List<Account> findAll() {
                         return accountRepository.findAll();
                     }
@@ -147,6 +151,28 @@
                     public void updatePassword(Account account, String newPassword) {
                         account.setPassword(passwordEncoder.encode(newPassword));
                         account.setResetToken(null);
+                        accountRepository.save(account);
+                    }
+                    @Transactional
+                    public void updateProfile(String username, String fullName, String phone, String address) {
+                        // 1. Tìm tài khoản theo username
+                        Account account = accountRepository.findByUsername(username)
+                                .orElseThrow(() -> new RuntimeException("User not found"));
+
+                        // 2. Lấy chi tiết tài khoản (hoặc tạo mới nếu chưa có)
+                        AccountDetail detail = account.getAccountDetail();
+                        if (detail == null) {
+                            detail = new AccountDetail();
+                            detail.setAccount(account);
+                            account.setAccountDetail(detail);
+                        }
+
+                        // 3. Cập nhật thông tin
+                        detail.setFullName(fullName);
+                        detail.setPhoneNumber(phone);
+                        detail.setAddress(address);
+
+                        // 4. Lưu lại (Cascade sẽ tự lưu AccountDetail)
                         accountRepository.save(account);
                     }
 

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<div th:fragment="header(activeNav)">
+
+    <div class="topbar py-2 bg-frubana text-white small fixed-top">
+        <div class="container d-flex justify-content-between flex-wrap align-items-center">
+            <div>
+                <i class="fa fa-map-marker-alt me-1"></i> 14 Nguyễn Văn Bảo, Gò Vấp
+                <span class="mx-2">|</span>
+                <i class="fa fa-envelope me-1"></i> fruitngon@gmail.com
+            </div>
+            <div>
+                <a th:href="@{/privary}" class="text-white text-decoration-none me-3">Chính sách bảo mật</a>
+                <a th:href="@{/term_of_service}" class="text-white text-decoration-none">Điều khoản dịch vụ</a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm custom-navbar">
+        <div class="container py-2">
+            <a class="navbar-brand fs-3 fw-bold text-frubana" th:href="@{/}">
+                <i class="fa-solid fa-leaf me-1"></i> Frubana
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto fw-semibold">
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activeNav == 'home'} ? 'active' : ''"
+                           th:href="@{/}">Trang chủ</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" th:classappend="${activeNav == 'products'} ? 'active' : ''"
+                           href="#" data-bs-toggle="dropdown">Sản phẩm</a>
+                        <ul class="dropdown-menu border-0 shadow fade-down">
+                            <li><a class="dropdown-item" th:href="@{/products/vegetable}">Rau củ quả</a></li>
+                            <li><a class="dropdown-item" th:href="@{/products/fruit}">Trái cây</a></li>
+                            <li><a class="dropdown-item" th:href="@{/products/meat}">Thịt tươi</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" th:href="@{/products/all}">Xem tất cả</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activeNav == 'testimonials'} ? 'active' : ''"
+                           th:href="@{/testimonials}">Lời chứng thực</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activeNav == 'contact'} ? 'active' : ''"
+                           th:href="@{/contact}">Liên hệ</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    <a th:href="@{/cart}" class="btn position-relative me-3" title="Giỏ hàng">
+                        <i class="fa fa-shopping-bag text-frubana fs-5"></i>
+                        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
+                              th:text="${totalQuantity != null ? totalQuantity : 0}">0</span>
+                    </a>
+
+                    <div class="dropdown" sec:authorize="isAuthenticated()">
+                        <button class="btn dropdown-toggle text-dark fw-semibold" id="userMenu" data-bs-toggle="dropdown">
+                            <i class="fa fa-user-circle me-1"></i>
+                            <span sec:authentication="principal.fullName"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow fade-down">
+                            <li><a class="dropdown-item" th:href="@{/profile}">Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item" th:href="@{/orders}">Đơn hàng của tôi</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="m-0">
+                                    <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div sec:authorize="!isAuthenticated()">
+                        <a th:href="@{/login}" class="btn btn-outline-success me-2">Đăng nhập</a>
+                        <a th:href="@{/register}" class="btn btn-success">Đăng ký</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+</body>
+</html>

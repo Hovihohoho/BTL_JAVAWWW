@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thông tin cá nhân | Frubana</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --frubana-green: #6d9c3a;
+            --frubana-dark-green: #5b8731;
+        }
+        body { font-family: "Segoe UI", sans-serif; background-color: #f8f9fa; }
+        .text-frubana { color: var(--frubana-green); }
+        .bg-frubana { background-color: var(--frubana-green) !important; }
+        .btn-frubana {
+            background-color: var(--frubana-green);
+            color: white;
+            border: none;
+            transition: all 0.3s;
+        }
+        .btn-frubana:hover {
+            background-color: var(--frubana-dark-green);
+            color: white;
+        }
+        .profile-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            background: #fff;
+            overflow: hidden;
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #6d9c3a, #a6d37a);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        .avatar-circle {
+            width: 100px;
+            height: 100px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--frubana-green);
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .nav-pills .nav-link.active {
+            background-color: var(--frubana-green);
+        }
+        .nav-pills .nav-link {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="py-2 bg-frubana text-white small">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div><i class="fa fa-envelope me-1"></i> fruitngon@gmail.com</div>
+        <div><a th:href="@{/logout}" class="text-white text-decoration-none">Đăng xuất</a></div>
+    </div>
+</div>
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3">
+    <div class="container">
+        <a class="navbar-brand fs-3 fw-bold text-frubana" th:href="@{/}">Frubana</a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav fw-semibold align-items-center">
+                <li class="nav-item"><a class="nav-link text-frubana" th:href="@{/}">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/products/all}">Sản phẩm</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cart}">Giỏ hàng</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-3 mb-4">
+            <div class="profile-card p-3">
+                <div class="d-flex align-items-center mb-3 p-2">
+                    <div class="bg-light rounded-circle p-2 me-3">
+                        <i class="fa fa-user text-frubana fs-4"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted">Tài khoản của</small>
+                        <h6 class="mb-0 fw-bold" th:text="${account.accountDetail != null ? account.accountDetail.fullName : account.username}">User</h6>
+                    </div>
+                </div>
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
+                    <a class="nav-link active mb-2" th:href="@{/profile}"><i class="fa fa-id-card me-2"></i> Thông tin tài khoản</a>
+                    <a class="nav-link mb-2" th:href="@{/orders}"><i class="fa fa-box-open me-2"></i> Lịch sử đơn hàng</a>
+                    <a class="nav-link mb-2" th:href="@{/change-password}"><i class="fa fa-key me-2"></i> Đổi mật khẩu</a>
+                    <hr>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="nav-link w-100 text-start text-danger"><i class="fa fa-sign-out-alt me-2"></i> Đăng xuất</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar-circle">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <h4 th:text="${account.username}">username</h4>
+                    <p class="mb-0 opacity-75" th:text="${account.email}">email@example.com</p>
+                </div>
+
+                <div class="p-4 p-lg-5">
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fa fa-check-circle me-2"></i> <span th:text="${successMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                    <h5 class="mb-4 text-frubana fw-bold"><i class="fa fa-pen me-2"></i>Cập nhật thông tin</h5>
+
+                    <form th:action="@{/profile/update}" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Tên đăng nhập</label>
+                                <input type="text" class="form-control bg-light" th:value="${account.username}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="text" class="form-control bg-light" th:value="${account.email}" readonly>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold">Họ và tên (*)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-frubana"><i class="fa fa-user"></i></span>
+                                    <input type="text" name="fullName" class="form-control" required
+                                           th:value="${account.accountDetail != null ? account.accountDetail.fullName : ''}"
+                                           placeholder="Nhập họ tên của bạn">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Số điện thoại (*)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-frubana"><i class="fa fa-phone"></i></span>
+                                    <input type="tel" name="phone" class="form-control" required
+                                           pattern="[0-9]{10}" title="Vui lòng nhập 10 chữ số"
+                                           th:value="${account.accountDetail != null ? account.accountDetail.phoneNumber : ''}"
+                                           placeholder="Ví dụ: 0912345678">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Địa chỉ giao hàng</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-frubana"><i class="fa fa-map-marker-alt"></i></span>
+                                    <input type="text" name="address" class="form-control"
+                                           th:value="${account.accountDetail != null ? account.accountDetail.address : ''}"
+                                           placeholder="Nhập địa chỉ nhận hàng">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-frubana px-4 py-2 fw-bold shadow-sm">
+                                <i class="fa fa-save me-2"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/script/cart_badge.js"></script>
+</body>
+</html>
