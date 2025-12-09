@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Frubana - Rau củ quả hữu cơ</title>
+    <title>Frubana - Rau củ quả hữu cơ & AI Assistant</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
@@ -14,7 +14,7 @@
         }
         body { font-family: "Segoe UI", sans-serif; }
         .text-frubana { color: var(--frubana-green); }
-        .bg-frubana { background-color: var(--frubana-dark-green) !important; }
+        .bg-frubana{background-color:var(--frubana-dark-green)!important;}
         .btn-frubana {
             background-color: var(--frubana-green);
             color: white;
@@ -45,16 +45,16 @@
             padding: 1.5rem 1rem;
         }
         .service-item:hover {
-            background-color: var(--frubana-light);
+            background-color: #e9f5e9; /* Màu nền nhẹ khi hover */
             transform: translateY(-5px);
         }
 
         .carousel-caption {
-            background: rgba(255,255,255,0.75);
+            background: rgba(0, 0, 0, 0.5); /* Nền tối để chữ dễ đọc hơn */
             border-radius: 10px;
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
             text-align: left;
-            color: #333;
+            color: #fff;
         }
         footer {
             background-color: var(--frubana-green);
@@ -65,27 +65,168 @@
             .product-card img { height: 160px; }
         }
 
-
-
-
-
-
-
-
-        /* Dropdown menu đẹp hơn */
+        .custom-navbar.scrolled {
+            background-color: #ffffff;
+            border-bottom: 2px solid var(--frubana-green);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
         .dropdown-menu.fade-down {
             transform: translateY(10px);
             opacity: 0;
             transition: all 0.3s ease;
         }
-
         .dropdown-menu.show.fade-down {
             transform: translateY(0);
             opacity: 1;
         }
 
+        /* ================= AI CHATBOT STYLES ================= */
+        .ai-chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            font-family: "Segoe UI", sans-serif;
+        }
 
+        /* Nút mở chat */
+        .ai-chat-btn {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6d9c3a, #4caf50);
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ai-chat-btn:hover {
+            transform: scale(1.1);
+        }
+        .ai-notification {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 15px;
+            height: 15px;
+            background-color: red;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
 
+        /* Cửa sổ chat */
+        .ai-chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 480px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            visibility: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+        .ai-chat-window.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            visibility: visible;
+        }
+
+        .chat-header {
+            background: var(--frubana-green);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .chat-header h6 { margin: 0; font-weight: 700; }
+        .chat-header .close-chat { cursor: pointer; opacity: 0.8; }
+        .chat-header .close-chat:hover { opacity: 1; }
+
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            background-color: #f9f9f9;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .message.bot {
+            background-color: #e9ecef;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .message.user {
+            background-color: var(--frubana-green);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-footer {
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 15px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .chat-input:focus { border-color: var(--frubana-green); }
+        .chat-send {
+            background: var(--frubana-green);
+            color: white;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .chat-send:hover { background: var(--frubana-dark-green); }
+
+        .typing-indicator {
+            font-size: 0.75rem;
+            color: #888;
+            margin-left: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -167,107 +308,296 @@
 </nav>
 
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
+    </div>
     <div class="carousel-inner">
         <div class="carousel-item active"
-             th:style="|background: url(@{/images/banner1.jpg}) center/cover; height:480px;|">
-            <div class="carousel-caption">
-                <h1 class="fw-bold">100% Thực phẩm hữu cơ</h1>
-                <p>Rau củ quả tươi - sạch - an toàn.</p>
-                <a th:href="@{/products/all}" class="btn btn-frubana mt-2">Xem sản phẩm</a>
+             th:style="|background: url(@{/images/banner1.jpg}) center/cover; height:500px;|">
+            <div class="carousel-caption d-none d-md-block">
+                <h1 class="fw-bold display-4">100% Thực phẩm hữu cơ</h1>
+                <p class="fs-5">Rau củ quả tươi - sạch - an toàn cho gia đình bạn.</p>
+                <a th:href="@{/products/all}" class="btn btn-frubana btn-lg mt-2 px-4 rounded-pill">Khám phá ngay</a>
             </div>
         </div>
 
         <div class="carousel-item"
-             th:style="|background: url(@{/images/banner2.jpg}) center/cover; height:480px;|">
-            <div class="carousel-caption">
-                <h1 class="fw-bold">Trái cây nhập khẩu</h1>
-                <p>Hương vị tự nhiên, tươi ngon mỗi ngày.</p>
-                <a th:href="@{/products/fruit}" class="btn btn-frubana mt-2">Mua ngay</a>
+             th:style="|background: url(@{/images/banner2.jpg}) center/cover; height:500px;|">
+            <div class="carousel-caption d-none d-md-block">
+                <h1 class="fw-bold display-4">Trái cây nhập khẩu</h1>
+                <p class="fs-5">Hương vị tự nhiên, tươi ngon mỗi ngày từ các nông trại hàng đầu.</p>
+                <a th:href="@{/products/fruit}" class="btn btn-frubana btn-lg mt-2 px-4 rounded-pill">Mua ngay</a>
             </div>
         </div>
     </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
 </div>
 
 <section class="container my-5">
     <div class="row text-center g-4">
         <div class="col-md-3">
-            <div class="service-item">
+            <div class="service-item h-100">
                 <i class="fa fa-truck fa-2x text-frubana mb-3"></i>
                 <h6 class="fw-bold">Miễn phí vận chuyển</h6>
-                <p class="text-muted small">Miễn phí cho đơn trên 300.000đ</p>
+                <p class="text-muted small mb-0">Miễn phí cho đơn trên 300.000đ</p>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="service-item">
+            <div class="service-item h-100">
                 <i class="fa fa-shield-alt fa-2x text-frubana mb-3"></i>
                 <h6 class="fw-bold">Thanh toán bảo mật</h6>
-                <p class="text-muted small">Đảm bảo an toàn tuyệt đối</p>
+                <p class="text-muted small mb-0">Đảm bảo an toàn tuyệt đối</p>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="service-item">
+            <div class="service-item h-100">
                 <i class="fa fa-undo-alt fa-2x text-frubana mb-3"></i>
                 <h6 class="fw-bold">Đổi trả dễ dàng</h6>
-                <p class="text-muted small">Đảm bảo hoàn tiền trong 30 ngày</p>
+                <p class="text-muted small mb-0">Đảm bảo hoàn tiền trong 30 ngày</p>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="service-item">
+            <div class="service-item h-100">
                 <i class="fa fa-headset fa-2x text-frubana mb-3"></i>
                 <h6 class="fw-bold">Hỗ trợ 24/7</h6>
-                <p class="text-muted small">Phục vụ mọi lúc, mọi nơi</p>
+                <p class="text-muted small mb-0">Phục vụ mọi lúc, mọi nơi</p>
             </div>
         </div>
     </div>
 </section>
+
 <div class="container my-5">
-    <h2 class="text-center mb-4 text-frubana fw-bold">Sản phẩm nổi bật</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-frubana fw-bold border-start border-4 border-success ps-3">Sản phẩm nổi bật</h2>
+        <a th:href="@{/products/all}" class="text-decoration-none text-muted hover-green">Xem tất cả <i class="fas fa-arrow-right"></i></a>
+    </div>
+
     <div class="row row-cols-1 row-cols-md-4 g-4">
         <div class="col" th:each="product : ${products}">
-            <div class="card product-card">
-                <img th:src="@{/images/{img}(img=${product.imageUrl})}" th:alt="${product.name}">
-                <div class="card-body">
-                    <h6 class="fw-bold text-dark" th:text="${product.name}">Tên sản phẩm</h6>
+            <div class="card product-card h-100">
+                <img th:src="@{/images/{img}(img=${product.imageUrl})}" th:alt="${product.name}" class="card-img-top">
+                <div class="card-body d-flex flex-column">
+                    <h6 class="fw-bold text-dark mb-2" th:text="${product.name}">Tên sản phẩm</h6>
 
-                    <p class="mb-1">
-                        <!-- Hiển thị giá gốc (gạch ngang) nếu có sale -->
-                        <span class="text-muted text-decoration-line-through me-1"
+                    <div class="mb-3">
+                        <span class="text-muted text-decoration-line-through me-1 small"
                               th:if="${product.salePrice != null}"
-                              th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VND'">
-                </span>
+                              th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                        </span>
+                        <span class="fw-bold text-danger fs-5"
+                              th:text="${#numbers.formatDecimal((product.salePrice != null ? product.salePrice : product.price), 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                        </span>
+                    </div>
 
-                        <!-- Hiển thị giá thực tế (ưu tiên sale nếu có) -->
-                        <span class="fw-bold text-success"
-                              th:text="${#numbers.formatDecimal((product.salePrice != null ? product.salePrice : product.price), 0, 'COMMA', 0, 'POINT')} + ' VND'">
-                </span>
-                    </p>
-
-                    <!-- Nút xem chi tiết -->
-                    <a th:href="@{'/products/detail/' + ${product.id}}"
-                       class="btn btn-outline-success btn-sm w-100 mb-2">
-                        Xem chi tiết
-                    </a>
-
-                    <!-- Nút thêm giỏ -->
-                    <button type="button" class="btn btn-frubana btn-sm w-100 add-to-cart-btn"
-                            th:attr="data-id=${product.id},
+                    <div class="mt-auto d-flex gap-2">
+                        <a th:href="@{'/products/detail/' + ${product.id}}"
+                           class="btn btn-outline-success btn-sm flex-fill">
+                            <i class="fa fa-eye"></i> Chi tiết
+                        </a>
+                        <button type="button" class="btn btn-frubana btn-sm flex-fill add-to-cart-btn"
+                                th:attr="data-id=${product.id},
                         data-name=${product.name},
                         data-price=${product.salePrice != null ? product.salePrice : product.price},
                         data-image=${product.imageUrl}">
-                        Thêm vào giỏ
-                    </button>
+                            <i class="fa fa-cart-plus"></i> Thêm
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-<footer class="text-center py-4">
+
+<footer class="text-center py-4 mt-5">
     <p class="mb-1">&copy; 2025 Frubana - Tươi ngon mỗi ngày.</p>
     <small>Made with <i class="fa fa-heart text-warning"></i> by Team IUH</small>
 </footer>
+
+<div class="ai-chat-widget">
+    <div class="ai-chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-robot fs-4 me-2"></i>
+                <div>
+                    <h6 class="mb-0">Frubana AI</h6>
+                    <small style="font-size: 0.75rem; opacity: 0.9;">Sẵn sàng hỗ trợ</small>
+                </div>
+            </div>
+            <i class="fas fa-times close-chat" onclick="toggleChat()"></i>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+            <div class="message bot">
+                Xin chào! 👋 Tôi là trợ lý ảo của Frubana. Bạn cần tìm rau củ hay muốn tôi gợi ý món ngon hôm nay?
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">Frubana AI đang nhập...</div>
+
+        <div class="chat-footer">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Nhập câu hỏi của bạn..." onkeypress="handleKeyPress(event)">
+            <button class="chat-send" onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <button class="ai-chat-btn" onclick="toggleChat()">
+        <i class="fas fa-comment-dots"></i>
+        <span class="ai-notification"></span>
+    </button>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/script/cart_badge.js"></script>
 <script src="/script/cart.js"></script>
+
+<script>
+    function toggleChat() {
+        const chatWindow = document.getElementById('chatWindow');
+        chatWindow.classList.toggle('active');
+        // Ẩn thông báo đỏ khi mở
+        if (chatWindow.classList.contains('active')) {
+            document.querySelector('.ai-notification').style.display = 'none';
+            document.getElementById('chatInput').focus();
+        }
+    }
+
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+        if (message === '') return;
+
+        // 1. Hiển thị tin nhắn người dùng
+        addMessage(message, 'user');
+        input.value = '';
+
+        // 2. Giả lập AI đang suy nghĩ
+        const typing = document.getElementById('typingIndicator');
+        typing.style.display = 'block';
+
+        // Tự động cuộn xuống cuối
+        scrollToBottom();
+
+        // 3. Phản hồi sau 1-1.5s
+        setTimeout(() => {
+            typing.style.display = 'none';
+            const botResponse = getAIResponse(message);
+            addMessage(botResponse, 'bot');
+        }, 1200);
+    }
+
+    function addMessage(text, sender) {
+        const chatBody = document.getElementById('chatBody');
+        const div = document.createElement('div');
+        div.classList.add('message', sender);
+        div.innerText = text;
+        chatBody.appendChild(div);
+        scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        const chatBody = document.getElementById('chatBody');
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    // ================== KỊCH BẢN AI CHUYÊN SÂU (Advanced Rule-Based) ==================
+    function getAIResponse(input) {
+        const text = input.toLowerCase().trim();
+
+        // --- 1. NHÓM CHÀO HỎI & GIAO TIẾP ---
+        if (text.includes('xin chào') || text.includes('chào') || text.includes('hi') || text.includes('hello')) {
+            return "Chào bạn! 👋 Chào mừng đến với Frubana. Tôi có thể giúp bạn tìm trái cây nhập khẩu 🍎, rau củ hữu cơ 🥦 hay thịt tươi 🥩 hôm nay?";
+        }
+        if (text.includes('cảm ơn') || text.includes('thank')) {
+            return "Không có chi! Rất vui được hỗ trợ bạn. Đừng quên đánh giá 5 sao cho shop nhé! ⭐";
+        }
+        if (text.includes('tạm biệt') || text.includes('bye')) {
+            return "Tạm biệt! Frubana luôn mở cửa chờ bạn quay lại. 👋";
+        }
+
+        // --- 2. NHÓM SẢN PHẨM & TƯ VẤN CỤ THỂ ---
+        // Trái cây
+        if (text.includes('dâu') || text.includes('strawberry')) {
+            return "🍓 Dâu tây Đà Lạt tại Frubana là hàng hái trong ngày, cuống xanh, trái cứng. Giá 65k/hộp 500g. Làm sinh tố hay ăn tươi đều tuyệt!";
+        }
+        if (text.includes('nho')) {
+            return "🍇 Nho đen Mỹ không hạt, vỏ mỏng, ngọt đậm. Shop đang có chương trình mua 2kg tặng 1 gói muối ô mai đấy ạ.";
+        }
+        if (text.includes('táo') || text.includes('apple')) {
+            return "🍎 Chúng tôi có Táo Envy Mỹ và Táo Rockit New Zealand. Táo giòn, ngọt, rất thơm. Bạn muốn mua size lớn hay nhỏ?";
+        }
+        if (text.includes('cam') || text.includes('quýt')) {
+            return "🍊 Cam vàng Ai Cập và Quýt Úc đang vào mùa. Mọng nước, giàu Vitamin C, tăng sức đề kháng cực tốt.";
+        }
+        // Rau củ & Thịt
+        if (text.includes('rau') || text.includes('củ')) {
+            return "🥦 Rau tại Frubana là rau hữu cơ chuẩn VietGAP. Sáng nay mới về cải kale, súp lơ baby và cà chua bi. Bạn xem ở mục 'Rau củ quả' nhé.";
+        }
+        if (text.includes('thịt') || text.includes('bò') || text.includes('heo')) {
+            return "🥩 Thịt bò thăn nội và Ba chỉ heo của shop được bảo quản lạnh tiêu chuẩn, đảm bảo độ tươi ngon nhất khi đến tay bạn.";
+        }
+
+        // --- 3. NHÓM GIỎ QUÀ TẶNG (MỚI) ---
+        if (text.includes('quà') || text.includes('biếu') || text.includes('tặng') || text.includes('giỏ trái cây')) {
+            return "🎁 Frubana chuyên thiết kế giỏ trái cây biếu tặng sang trọng (Sinh nhật, Khai trương, Thăm hỏi). Giá từ 500k - 2 triệu. Bạn cần tư vấn mẫu nào không?";
+        }
+
+        // --- 4. NHÓM NGUỒN GỐC & XUẤT XỨ (MỚI) ---
+        if (text.includes('xuất xứ') || text.includes('ở đâu') || text.includes('trung quốc')) {
+            return "🌍 Shop cam kết minh bạch nguồn gốc: Trái cây nhập khẩu (Mỹ, Úc, New Zealand) có tem truy xuất. Rau củ từ các nông trại Đà Lạt uy tín. Nói KHÔNG với hàng trôi nổi.";
+        }
+
+        // --- 5. NHÓM BẢO QUẢN & SỬ DỤNG (MỚI) ---
+        if (text.includes('bảo quản') || text.includes('giữ tươi') || text.includes('để được lâu')) {
+            return "❄️ Mẹo nhỏ: Trái cây nên bọc giấy báo hoặc màng bọc thực phẩm rồi để ngăn mát tủ lạnh. Không rửa trước khi cất để tránh bị úng nước bạn nhé.";
+        }
+        if (text.includes('ăn thế nào') || text.includes('chế biến')) {
+            return "👨‍🍳 Sản phẩm này ăn tươi, làm salad, ép nước hoặc làm mứt đều ngon. Bạn có thể ghé mục Blog của Frubana để xem công thức chi tiết ạ.";
+        }
+
+        // --- 6. NHÓM VẬN CHUYỂN & PHÍ SHIP ---
+        if (text.includes('ship') || text.includes('vận chuyển') || text.includes('giao hàng')) {
+            return "🚚 Phí ship nội thành đồng giá 15k. FREESHIP đơn > 300k. Giao hỏa tốc 2h để đảm bảo độ tươi ngon nhất.";
+        }
+        if (text.includes('tỉnh') || text.includes('xa')) {
+            return "📦 Với đơn tỉnh, shop đóng thùng xốp kèm đá gel bảo quản. Thời gian nhận 1-2 ngày. Phí ship sẽ báo cụ thể khi chốt đơn ạ.";
+        }
+
+        // --- 7. NHÓM MUA SỈ & HỢP TÁC (MỚI) ---
+        if (text.includes('sỉ') || text.includes('buôn') || text.includes('nhà hàng') || text.includes('số lượng lớn')) {
+            return "🤝 Frubana có chính sách giá tốt cho nhà hàng/quán cafe lấy sỉ. Vui lòng để lại SĐT hoặc liên hệ Zalo 0379255680 để nhận báo giá B2B nhé.";
+        }
+
+        // --- 8. NHÓM THANH TOÁN & ĐỔI TRẢ ---
+        if (text.includes('thanh toán') || text.includes('chuyển khoản')) {
+            return "💳 Bạn có thể thanh toán COD (tiền mặt) hoặc chuyển khoản qua QR Code VNPAY/MoMo tiện lợi tại bước thanh toán.";
+        }
+        if (text.includes('hỏng') || text.includes('đổi trả') || text.includes('khiếu nại')) {
+            return "🛡️ Chính sách bảo hành: 1 đổi 1 trong vòng 24h nếu sản phẩm bị dập nát hoặc không đúng chất lượng. Bạn chụp ảnh gửi lại shop ngay nhé!";
+        }
+
+        // --- 9. NHÓM HỖ TRỢ TÀI KHOẢN ---
+        if (text.includes('quên mật khẩu') || text.includes('đăng nhập')) {
+            return "🔐 Bạn nhấn vào 'Đăng nhập' > chọn 'Quên mật khẩu' để lấy lại password qua email nhé. Nếu không được, hãy chat với admin tại đây.";
+        }
+
+        // --- MẶC ĐỊNH ---
+        return "Xin lỗi, tôi chưa hiểu rõ ý bạn lắm 🤔. Bạn có thể hỏi về 'giá dâu tây', 'phí ship', 'giỏ quà tặng' hoặc 'chính sách đổi trả' được không?";
+    }
+</script>
+
 </body>
 </html>

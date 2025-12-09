@@ -209,7 +209,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="bg-white p-4 rounded shadow-sm h-100">
-                            <p><strong>Tổng thanh toán:</strong> <span th:text="${#numbers.formatDecimal(amount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span></p>
+                            <p><strong>Tổng thanh toán:</strong> </p>
                             <ul class="list-group mb-3">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     Tạm tính:
@@ -256,127 +256,127 @@
 </body>
 </html>
 <script>
+    // Hàm cập nhật tổng tiền hiển thị (giữ nguyên)
     function updateCartTotals() {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
         let subtotal = 0;
         cart.forEach(item => {
             subtotal += item.price * item.quantity;
         });
-
-        const shipping = 15000; // ví dụ 15.000 VND
+        const shipping = 15000;
         const grandTotal = subtotal + shipping;
 
-        // ✅ Cập nhật ra HTML
-        document.getElementById("cart-subtotal-js").innerText = subtotal.toLocaleString("vi-VN") + " VND";
-        document.getElementById("cart-shipping-js").innerText = shipping.toLocaleString("vi-VN") + " VND";
-        document.getElementById("cart-grandtotal-js").innerText = grandTotal.toLocaleString("vi-VN") + " VND";
+        // Cập nhật giao diện
+        const subEl = document.getElementById("cart-subtotal-js");
+        const shipEl = document.getElementById("cart-shipping-js");
+        const grandEl = document.getElementById("cart-grandtotal-js");
+
+        if(subEl) subEl.innerText = subtotal.toLocaleString("vi-VN") + " VND";
+        if(shipEl) shipEl.innerText = shipping.toLocaleString("vi-VN") + " VND";
+        if(grandEl) grandEl.innerText = grandTotal.toLocaleString("vi-VN") + " VND";
     }
 
-    // Gọi hàm này sau khi render xong danh sách giỏ hàng
-    updateCartTotals();
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const checkoutBtn = document.querySelector('a.btn.btn-success.w-100');
-
-        checkoutBtn.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            const name = document.querySelector('input[placeholder="Nhập họ tên"]').value.trim();
-            const address = document.querySelector('input[placeholder="Nhập địa chỉ"]').value.trim();
-            const phone = document.querySelector('input[placeholder="Nhập số điện thoại"]').value.trim();
-            const agree = document.querySelector('#agree').checked;
-            const payment = document.querySelector('input[name="payment"]:checked').value;
-
-            const nameRegex = /^[A-Za-zÀ-ỹ\s]{5,50}$/;
-            const addressRegex = /^.{5,100}$/;
-            const phoneRegex = /^(0[3|5|7|8|9])[0-9]{8}$/;
-
-            if (!nameRegex.test(name)) {
-                alert("❌ Họ tên không hợp lệ!");
-                return;
-            }
-            if (!addressRegex.test(address)) {
-                alert("❌ Địa chỉ không hợp lệ!");
-                return;
-            }
-            if (!phoneRegex.test(phone)) {
-                alert("❌ Số điện thoại không hợp lệ!");
-                return;
-            }
-            if (!agree) {
-                alert("⚠️ Vui lòng đồng ý với điều khoản trước khi thanh toán!");
-                return;
-            }
-
-            // ✅ Lấy giỏ hàng từ localStorage
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-// ✅ Tính lại tổng tiền
-            let subtotal = 0;
-            cart.forEach(item => {
-                subtotal += item.price * item.quantity;
-            });
-
-            const shipping = 15000; // hoặc 15000, tuỳ bạn cấu hình
-            const grandTotal = subtotal + shipping;
-
-            console.log("🧮 Tổng tiền gửi qua backend:", grandTotal);
-
-
-            console.log("🧮 Tổng tiền gửi qua backend:", grandTotal);
-
-            // ✅ Điều hướng tới backend
-            if (payment === "cod") {
-                window.location.href = `/checkout/cod?amount=${grandTotal}`;
-            } else if (payment === "online") {
-                // ⚡ Gọi tới controller VNPay
-                window.location.href = `/payment/vnpay?amount=${grandTotal}`;
-            }
-        });
-    });
-    // ✅ Hàm cập nhật tổng số sản phẩm hiển thị trên biểu tượng giỏ hàng
+    // Hàm cập nhật badge số lượng (giữ nguyên)
     function updateCartBadge() {
         const badge = document.querySelector(".badge.bg-danger");
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-        // Cộng dồn số lượng từng sản phẩm
         const totalQuantity = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
-
-        badge.textContent = totalQuantity;
-
-        // Ẩn badge nếu giỏ trống
-        if (totalQuantity === 0) {
-            badge.style.display = "none";
-        } else {
-            badge.style.display = "inline-block";
+        if (badge) {
+            badge.textContent = totalQuantity;
+            badge.style.display = totalQuantity === 0 ? "none" : "inline-block";
         }
     }
 
-    // ✅ Gọi ngay khi trang vừa tải
-    document.addEventListener("DOMContentLoaded", function () {
+    // --- XỬ LÝ THANH TOÁN (LOGIC MỚI) ---
+    document.addEventListener("DOMContentLoaded", function() {
+        updateCartTotals();
         updateCartBadge();
-    });
 
-    document.addEventListener("DOMContentLoaded", () => {
+        // 1. Lưu thông tin người nhận vào localStorage để đỡ phải nhập lại
         const fields = ["receiverName", "receiverAddress", "receiverPhone"];
-
         fields.forEach(id => {
             const input = document.getElementById(id);
-            if (!input) return;
-
-            // Nếu localStorage có → gán vào input
-            const savedValue = localStorage.getItem(id);
-            if (savedValue) input.value = savedValue;
-
-            // Lưu lại mỗi khi người dùng nhập
-            input.addEventListener("input", () => {
-                localStorage.setItem(id, input.value);
-            });
+            if (input) {
+                const savedValue = localStorage.getItem(id);
+                if (savedValue) input.value = savedValue;
+                input.addEventListener("input", () => localStorage.setItem(id, input.value));
+            }
         });
+
+        // 2. Xử lý nút thanh toán
+        const checkoutBtn = document.querySelector('a.btn.btn-success.w-100');
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener('click', function(event) {
+                event.preventDefault(); // ⛔ Chặn chuyển trang ngay lập tức
+
+                // Validate dữ liệu nhập
+                const nameInp = document.getElementById("receiverName");
+                const addrInp = document.getElementById("receiverAddress");
+                const phoneInp = document.getElementById("receiverPhone");
+                const agree = document.querySelector('#agree');
+                const paymentRadio = document.querySelector('input[name="payment"]:checked');
+
+                // Kiểm tra form cơ bản
+                if (!nameInp.value.trim() || !addrInp.value.trim() || !phoneInp.value.trim()) {
+                    alert("❌ Vui lòng điền đầy đủ thông tin người nhận!");
+                    return;
+                }
+                if (!agree.checked) {
+                    alert("⚠️ Vui lòng đồng ý với điều khoản!");
+                    return;
+                }
+
+                // Lấy giỏ hàng
+                const cart = JSON.parse(localStorage.getItem("cart")) || [];
+                if (cart.length === 0) {
+                    alert("Giỏ hàng trống!");
+                    return;
+                }
+
+                // Tính tổng tiền
+                let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const grandTotal = subtotal + 15000;
+
+                // ⚠️ QUAN TRỌNG: Map dữ liệu cho khớp với Java CartItem
+                // Java cần: productId, productName, price, quantity
+                // JS đang có: id, name, price, quantity
+                const cartPayload = cart.map(item => ({
+                    productId: item.id,
+                    productName: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                }));
+
+                // 🔄 GỬI DỮ LIỆU LÊN SERVER TRƯỚC (SYNC)
+                fetch('/api/cart/sync', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cartPayload)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log("✅ Đã đồng bộ giỏ hàng lên Server");
+
+                            // Sau khi Server đã nhận được giỏ hàng, mới chuyển trang
+                            const payment = paymentRadio.value;
+                            if (payment === "cod") {
+                                window.location.href = `/checkout/cod?amount=${grandTotal}`;
+                            } else if (payment === "online") {
+                                window.location.href = `/payment/vnpay?amount=${grandTotal}`;
+                            }
+                        } else {
+                            alert("❌ Lỗi kết nối với server. Vui lòng thử lại.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("❌ Có lỗi xảy ra khi xử lý đơn hàng.");
+                    });
+            });
+        }
     });
-
-
 </script>
 
 

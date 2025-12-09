@@ -14,5 +14,23 @@
     <p>Chúng tôi sẽ xác nhận đơn hàng và giao sản phẩm trong thời gian sớm nhất.</p>
     <a th:href="@{/}" class="btn btn-success mt-3">← Quay lại trang chủ</a>
 </div>
+<script>
+    // ✅ Xóa giỏ hàng trong trình duyệt sau khi thanh toán thành công
+    document.addEventListener("DOMContentLoaded", function() {
+        localStorage.removeItem("cart"); // Xóa dữ liệu giỏ hàng
+
+        // (Tuỳ chọn) Reset các trường thông tin người nhận nếu muốn
+        localStorage.removeItem("receiverName");
+        localStorage.removeItem("receiverAddress");
+        localStorage.removeItem("receiverPhone");
+
+        // Cập nhật lại badge (nếu trang này có hiển thị navbar)
+        if (typeof updateCartBadge === 'function') {
+            updateCartBadge();
+        }
+    });
+</script>
+</body>
+</html>
 </body>
 </html>
