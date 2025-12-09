@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -74,5 +75,37 @@ public class OrderService {
 
     public List<Order> getOrdersByUsername(String username) {
         return orderRepository.findByAccountUsername(username);
+    }
+    // Add this method inside OrderService class
+
+
+    public List<Order> getAllOrdersWithDetails() {
+        return orderRepository.findAllWithDetails();
+    }
+
+    public Optional<Order> getOrderById(Long id) {
+        return orderRepository.findById(id);
+    }
+
+    public void updateOrderStatus(Long orderId, Long statusId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy order id = " + orderId));
+
+        OrderStatus status = orderStatusRepository.findById(statusId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy trạng thái id = " + statusId));
+
+        order.setOrderStatus(status);
+        orderRepository.save(order);
+    }
+
+    // 👉 Lấy tất cả order kèm chi tiết
+    public List<Order> findAllWithDetails() {
+        return orderRepository.findAllWithDetails();
+    }
+
+    public void deleteById(Long id) { orderRepository.deleteById(id); }
+    // ✅ Hàm dùng cho ADMIN: lấy tất cả đơn hàng
+    public List<Order> findAll() {
+        return orderRepository.findAll();
     }
 }
